@@ -1,14 +1,16 @@
 require("dotenv").config();
+const cors = require("cors");
 const express = require("express");
+const lifeRoute = require("./routers/life");
 const app = express();
 
 const PORT = process.env.PORT || 5555;
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
-app.get("/api", (req, res) => {
-  res.json({ message: "test data" });
-});
+app.use("/api/life", lifeRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
