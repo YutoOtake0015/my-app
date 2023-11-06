@@ -45,7 +45,7 @@ router.post("/signin", async (req, res) => {
   }
 
   // 認証トークン生成
-  const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, {
+  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, {
     expiresIn: "1d",
   });
 

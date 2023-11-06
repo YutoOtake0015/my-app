@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
+import { useAuth } from "../src/context/auth";
 
 type navType = {
   text: string;
@@ -22,6 +23,8 @@ const navLinks: Array<navType> = [
 ];
 
 const Navbar = () => {
+  const { signout, user } = useAuth();
+
   return (
     <>
       <AppBar
@@ -51,18 +54,34 @@ const Navbar = () => {
               component="nav"
               sx={{ display: "flex", justifyContent: "flex-start" }}
             >
-              {navLinks.map((navLink) => (
-                <ListItem disablePadding key={navLink.url}>
+              {!user ? (
+                <>
+                  {navLinks.map((navLink) => (
+                    <ListItem disablePadding key={navLink.url}>
+                      <ListItemButton
+                        sx={{
+                          whiteSpace: "nowrap",
+                        }}
+                        href={navLink.url}
+                      >
+                        <ListItemText primary={navLink.text} />
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+                </>
+              ) : (
+                <ListItem disablePadding>
                   <ListItemButton
-                    sx={{
-                      whiteSpace: "nowrap",
-                    }}
-                    href={navLink.url}
+                    sx={{ whiteSpace: "nowrap" }}
+                    onClick={signout}
                   >
-                    <ListItemText primary={navLink.text} />
+                    <ListItemText primary={`サインアウト`} />
+                  </ListItemButton>
+                  <ListItemButton sx={{ whiteSpace: "nowrap" }}>
+                    <ListItemText primary={`ユーザ設定`} />
                   </ListItemButton>
                 </ListItem>
-              ))}
+              )}
             </List>
           </Box>
         </Container>
