@@ -3,6 +3,7 @@ const cors = require("cors");
 const express = require("express");
 const lifeRoute = require("./routers/life");
 const authRoute = require("./routers/auth");
+const usersRoute = require("./routers/users");
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(cors());
 
 app.use("/api/life", lifeRoute);
 app.use("/api/auth", authRoute);
+app.use("/api/users", usersRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
