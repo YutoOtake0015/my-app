@@ -29,7 +29,7 @@ model Person {
   id Int @id @default(autoincrement())
   personName String
   sex String
-  birthDay String
+  birthDate DateTime
   isAccountUser Boolean
   userId Int 
   user User @relation(fields: [userId], references: [id])

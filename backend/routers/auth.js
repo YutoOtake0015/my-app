@@ -12,7 +12,11 @@ router.get("/test", (req, res) => {
 });
 
 router.post("/signup", async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, birthDate, sex } = req.body;
+
+  // 生年月日のフォーマット変換
+  const birthDateAsDate = new Date(birthDate);
+  const isoDate = birthDateAsDate.toISOString();
 
   // パスワードをハッシュ化
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -23,6 +27,14 @@ router.post("/signup", async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      persons: {
+        create: {
+          personName: username,
+          sex,
+          birthDate: isoDate,
+          isAccountUser: true,
+        },
+      },
     },
   });
 

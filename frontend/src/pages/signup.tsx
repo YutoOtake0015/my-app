@@ -8,11 +8,20 @@ import Container from "@mui/material/Container";
 import { useState } from "react";
 import apiClient from "../lib/apiClient";
 import { useRouter } from "next/router";
+import { MenuItem, Select } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers";
+
+type sexType = "male" | "female";
 
 export default function SignUp() {
+  // アカウント情報
   const [username, setUserName] = useState<string>();
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
+
+  // ユーザ情報
+  const [sex, setSex] = useState<sexType | "">("");
+  const [birthDate, setBirthDate] = useState<Date>(null);
 
   const router = useRouter();
 
@@ -24,6 +33,8 @@ export default function SignUp() {
         username,
         email,
         password,
+        birthDate,
+        sex,
       });
 
       router.push("/signin");
@@ -89,6 +100,27 @@ export default function SignUp() {
                   setPassword(e.target.value)
                 }
               />
+            </Grid>
+            <Grid item xs={12} sm={8}>
+              <DatePicker
+                label="生年月日"
+                onChange={(e: Date) => setBirthDate(e as Date)}
+                value={birthDate}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <Select
+                value={sex}
+                required
+                label="性別"
+                fullWidth
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setSex(e.target.value as sexType)
+                }
+              >
+                <MenuItem value={"male"}>男</MenuItem>
+                <MenuItem value={"female"}>女</MenuItem>
+              </Select>
             </Grid>
           </Grid>
           <Button
