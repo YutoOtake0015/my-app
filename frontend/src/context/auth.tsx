@@ -6,6 +6,8 @@ interface AuthContextType {
     id: number;
     username: string;
     email: string;
+    sex: string;
+    birthDate: string;
   };
   signin: (token: string) => void;
   signout: () => void;
@@ -30,6 +32,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     id: number;
     email: string;
     username: string;
+    sex: string;
+    birthDate: string;
   }>(null);
 
   useEffect(() => {

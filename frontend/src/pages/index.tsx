@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Button,
@@ -11,6 +11,7 @@ import {
 import { styled } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
 import apiClient from "../lib/apiClient";
+import { useAuth } from "../context/auth";
 
 type sexType = "male" | "female";
 
@@ -33,6 +34,8 @@ type personType = {
 } | null;
 
 export default function Home() {
+  const { user } = useAuth();
+
   const [person, setPerson] = useState<personType>(null);
   const [selectBirthDate, setSelectBirthDate] = useState<Date>(null);
   const [selectSex, setSelectSex] = useState<sexType | "">("");
@@ -56,11 +59,10 @@ export default function Home() {
       }
 
       // 選択した値を状態にセット
-      const newPerson = {
+      setPerson({
         birthDate: selectBirthDate,
         sex: selectSex,
-      };
-      setPerson(newPerson);
+      });
 
       // 寿命を取得
       const fetchData = await apiClient.get("/life/lifespan", {
@@ -79,10 +81,33 @@ export default function Home() {
     }
   };
 
+  if (user && !person) {
+    setPerson({
+      birthDate: new Date(user.birthDate),
+      sex: user.sex,
+    });
+
+    // 寿命を取得
+    const getLife = async () => {
+      const fetchData = await apiClient.get("/life/lifespan", {
+        params: { year: new Date(user.birthDate), sex: user.sex },
+      });
+      const data = fetchData.data;
+      setLifeSpan(data.remainTime / (365 * 24 * 60 * 60));
+    };
+    getLife();
+  }
+
+  useEffect(() => {
+    if (!user) {
+      setPerson(null);
+    }
+  }, [user]);
+
   return (
     <Container>
       <div>
-        {person ? (
+        {person && (
           <div>
             <p>
               生年月日: {person.birthDate.toLocaleString("ja").split(" ")[0]}
@@ -94,15 +119,17 @@ export default function Home() {
               <span>{lifeSpan}年</span>
             </p>
           </div>
-        ) : (
-          <div>
-            <p>生年月日: -</p>
-            <p>性別: -</p>
-          </div>
         )}
-        <Button variant="contained" onClick={() => setShowModal(true)}>
-          情報を設定
-        </Button>
+
+        {!user && (
+          <Button
+            variant="contained"
+            onClick={() => setShowModal(true)}
+            sx={{ marginTop: "1rem" }}
+          >
+            情報を設定
+          </Button>
+        )}
       </div>
       {showModal && (
         <>

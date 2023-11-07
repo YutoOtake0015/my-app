@@ -22,7 +22,7 @@ export default function SignIn() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      // アカウント新規登録APIを実行
+      // サインインAPIを実行
       const response = await apiClient.post("/auth/signin", {
         email,
         password,

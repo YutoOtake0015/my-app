@@ -6,13 +6,30 @@ const prisma = new PrismaClient();
 
 router.get("/find", isAuthenticated, async (req, res) => {
   try {
-    const user = await prisma.user.findUnique({ where: { id: req.userId } });
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+      include: {
+        persons: {
+          where: {
+            isAccountUser: true,
+          },
+        },
+      },
+    });
+
+    // ユーザーを取得できない場合
     if (!user) {
       res.status(404).json({ error: "ユーザ見つかりませんでした" });
     }
 
     res.status(200).json({
-      user: { id: user.id, email: user.email, username: user.username },
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        sex: user.persons[0].sex,
+        birthDate: user.persons[0].birthDate,
+      },
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
