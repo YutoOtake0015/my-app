@@ -30,4 +30,24 @@ router.get("/findAll", isAuthenticated, async (req, res) => {
   }
 });
 
+router.post("/create", isAuthenticated, async (req, res) => {
+  const { personName, sex, birthDate, userId } = req.body;
+
+  try {
+    const persons = await prisma.person.create({
+      data: {
+        personName,
+        sex,
+        birthDate,
+        isAccountUser: false,
+        userId,
+      },
+    });
+
+    res.status(200).json({ persons });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;
