@@ -5,12 +5,6 @@ const jwt = require("jsonwebtoken");
 
 const prisma = new PrismaClient();
 
-router.get("/test", (req, res) => {
-  const crypto = require("crypto");
-  const secretKey = crypto.randomBytes(32).toString("hex");
-  return res.json({ secretKey: secretKey });
-});
-
 router.post("/signup", async (req, res) => {
   const { username, email, password, birthDate, sex } = req.body;
 

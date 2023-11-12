@@ -1,5 +1,4 @@
-import { use, useEffect, useState } from "react";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   Button,
   Container,
@@ -106,6 +105,17 @@ export default function Home() {
 
   return (
     <Container>
+      {user && (
+        <div>
+          <Button
+            href="/persons"
+            variant="contained"
+            sx={{ marginTop: "1rem" }}
+          >
+            みんなの余命
+          </Button>
+        </div>
+      )}
       <div>
         {person && (
           <div>
