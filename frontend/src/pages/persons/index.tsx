@@ -1,5 +1,5 @@
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { Container } from "@mui/material";
+import { Button, Container } from "@mui/material";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import apiClient from "../../lib/apiClient";
@@ -37,24 +37,22 @@ const Persons = () => {
     {
       field: "name",
       headerName: "名前",
-      minWidth: 250,
-      flex: 0.5,
-      renderCell: (params: GridRenderCellParams<any>) => (
-        <Link
-          className="text-blue-200 underline"
-          href={`/persons/${params.id}`}
-        >
-          {params.row.name}
-        </Link>
-      ),
+      minWidth: 150,
     },
     { field: "sex", headerName: "性別" },
     { field: "birthDate", headerName: "生年月日", minWidth: 100 },
-    { field: "remainingLife", headerName: "余命", minWidth: 150 },
+    { field: "remainingLife", headerName: "余命", minWidth: 200 },
   ];
 
   return (
     <Container>
+      <Button
+        href="/persons/create"
+        variant="contained"
+        sx={{ marginTop: "1rem" }}
+      >
+        新規登録
+      </Button>
       {persons ? (
         <div>
           <DataGrid
