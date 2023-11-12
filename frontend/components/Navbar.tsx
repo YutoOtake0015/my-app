@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useAuth } from "../src/context/auth";
+import { useRouter } from "next/router";
 
 type navType = {
   text: string;
@@ -24,6 +25,13 @@ const navLinks: Array<navType> = [
 
 const Navbar = () => {
   const { signout, user } = useAuth();
+
+  const router = useRouter();
+
+  const handleSignout = () => {
+    signout();
+    router.push("/");
+  };
 
   return (
     <>
@@ -73,7 +81,7 @@ const Navbar = () => {
                 <ListItem disablePadding>
                   <ListItemButton
                     sx={{ whiteSpace: "nowrap" }}
-                    onClick={signout}
+                    onClick={handleSignout}
                   >
                     <ListItemText primary={`サインアウト`} />
                   </ListItemButton>
