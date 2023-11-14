@@ -85,7 +85,7 @@ const Navbar = () => {
                   >
                     <ListItemText primary={`サインアウト`} />
                   </ListItemButton>
-                  <ListItemButton sx={{ whiteSpace: "nowrap" }}>
+                  <ListItemButton sx={{ whiteSpace: "nowrap" }} href="/mypage">
                     <ListItemText primary={`ユーザ設定`} />
                   </ListItemButton>
                 </ListItem>
