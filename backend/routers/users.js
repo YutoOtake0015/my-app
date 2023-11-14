@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const bcrypt = require("bcrypt");
 const { PrismaClient } = require("@prisma/client");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 
@@ -36,31 +37,41 @@ router.get("/find", isAuthenticated, async (req, res) => {
   }
 });
 
-router.get("/profile/:userId", async (req, res) => {
-  const { userId } = req.params;
-
+router.post("/update", isAuthenticated, async (req, res) => {
   try {
-    const profile = await prisma.profile.findUnique({
-      where: { userId: parseInt(userId) },
-      include: {
-        user: {
-          include: {
-            profile: true,
-          },
+    const { id, email, password } = req.body;
+
+    // emailがユーザの登録しているメールアドレスであることを確認
+    const existUser = await prisma.user.findFirst({
+      where: {
+        email,
+        id: {
+          not: id,
         },
       },
     });
 
-    if (!profile) {
+    if (existUser) {
       return res
-        .status(404)
-        .json({ message: "プロフィールが見つかりませんでした" });
+        .status(400)
+        .json({ message: "このemailは他のユーザが使用しています" });
     }
 
-    res.status(200).json(profile);
+    // パスワードをハッシュ化
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // ユーザ情報を更新
+    await prisma.user.update({
+      where: { id },
+      data: {
+        email,
+        password: hashedPassword,
+      },
+    });
+
+    res.status(200).json(this.user);
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
 
