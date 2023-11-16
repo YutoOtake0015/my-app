@@ -25,7 +25,7 @@ const Persons = () => {
         (person) =>
           person.sex === "male"
             ? { ...person, sex: "男" }
-            : { ...person, sex: "女" },
+            : { ...person, sex: "女" }
       );
 
       setPersons(formattedPersonsData);
@@ -42,6 +42,22 @@ const Persons = () => {
     { field: "sex", headerName: "性別" },
     { field: "birthDate", headerName: "生年月日", minWidth: 100 },
     { field: "remainingLife", headerName: "余命", minWidth: 200 },
+    {
+      field: "show",
+      headerName: "詳細",
+      headerAlign: "center",
+      align: "center",
+      sortable: false,
+      minWidth: 100,
+      flex: 0.3,
+      renderCell: (params: GridRenderCellParams<any>) => (
+        <>
+          <Link className="text-blue-400" href={`/persons/${params.id}`}>
+            詳細
+          </Link>
+        </>
+      ),
+    },
   ];
 
   return (
