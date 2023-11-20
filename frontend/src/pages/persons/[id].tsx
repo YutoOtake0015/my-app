@@ -13,15 +13,30 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
+import nookies from "nookies";
 
 type sexType = "male" | "female";
 
-export const getServerSideProps = async ({ params }) => {
-  try {
-    const { id } = params;
+// サーバーサイドでのクッキーの取得
+export const getServerSideProps = async ({ req, params }) => {
+  const { id } = params;
 
+  // サーバーサイドでは req.headers.cookie からクッキーを取得
+  const cookies = nookies.get(params);
+  const token = req.headers.cookie
+    ? req.headers.cookie.replace(
+        /(?:(?:^|.*;\s*)auth_token\s*=\s*([^;]*).*$)|^.*$/,
+        "$1",
+      )
+    : null;
+
+  try {
     // APIリクエストを非同期で実行
-    const response = await apiClient.get(`/persons/find/${id}`);
+    const response = await apiClient.get(`/persons/find/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     // レスポンスデータをpropsとして返却
     return {
@@ -43,7 +58,7 @@ const PersonPage = ({ person }) => {
   const router = useRouter();
 
   // ユーザ情報
-  const [personName, setPersonName] = useState<string>();
+  const [personName, setPersonName] = useState<string>("");
   const [sex, setSex] = useState<sexType | "">("");
   const [birthDate, setBirthDate] = useState<Date>(null);
 
@@ -71,7 +86,7 @@ const PersonPage = ({ person }) => {
       setSex(person.sex);
       setBirthDate(new Date(person.birthDate));
     } else {
-      // 人物情報を取得できなかった場合、余命一覧に移動
+      // 人物情報が利用できない場合の処理
       alert("情報の編集に失敗しました");
       router.push("/persons");
     }

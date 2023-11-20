@@ -1,5 +1,6 @@
 import React, { ReactNode, useContext, useEffect, useState } from "react";
 import apiClient from "../lib/apiClient";
+import nookies from "nookies";
 
 interface AuthContextType {
   user: null | {
@@ -56,6 +57,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signin = async (token: string) => {
     localStorage.setItem("auth_token", token);
+    nookies.set(null, "auth_token", token, {
+      maxAge: 30 * 24 * 60 * 60,
+      path: "/",
+    });
     apiClient.defaults.headers["Authorization"] = `Bearer ${token}`;
 
     // サインイン時、ユーザーをセット
@@ -70,7 +75,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signout = () => {
     localStorage.removeItem("auth_token");
-    delete apiClient.defaults.headers["Authorication"];
+    nookies.destroy(null, "auth_token");
+    delete apiClient.defaults.headers["Authorization"];
     setUser(null);
   };
 
