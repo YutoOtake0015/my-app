@@ -6,11 +6,14 @@ import {
   Modal,
   Select,
   SelectChangeEvent,
+  Typography,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
-import apiClient from "../lib/apiClient";
 import { useAuth } from "../context/auth";
+import RemainingLife from "../../components/RemainingLife";
+import { format, differenceInYears } from "date-fns";
+import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 
 type sexType = "male" | "female";
 
@@ -25,120 +28,134 @@ const modalStyle = {
   border: "2px solid #000",
   boxShadow: "0px 3px 5px 2px rgba(0,0,0,0.3)",
   padding: "1rem",
+  backgroundColor: "rgba(255, 255, 255, 0.9)", // 半透明の背景色
+  borderRadius: "10px",
 };
 
 type personType = {
   birthDate: Date;
-  sex: string;
+  sex: sexType;
 } | null;
 
 export default function Home() {
   const { user } = useAuth();
 
   const [person, setPerson] = useState<personType>(null);
-  const [selectBirthDate, setSelectBirthDate] = useState<Date>(null);
+  const [selectBirthDate, setSelectBirthDate] = useState<Date | null>(null);
   const [selectSex, setSelectSex] = useState<sexType | "">("");
-  const [lifeSpan, setLifeSpan] = useState<number>();
   const [showModal, setShowModal] = useState(false);
 
-  const handleChangeSex = (e: SelectChangeEvent<string>) => {
-    setSelectSex(e.target.value as any);
+  const handleChangeSex = (e: SelectChangeEvent<sexType>) => {
+    setSelectSex(e.target.value as sexType);
   };
 
-  const handleChangeBirth = (e: Date) => {
-    // 選択された日付をDate型でセット
+  const handleChangeBirth = (e: Date | null) => {
     setSelectBirthDate(e);
+  };
+
+  const calculateAge = (birthDate: Date) => {
+    const currentDate = new Date();
+    return differenceInYears(currentDate, birthDate);
   };
 
   const handleSetting = async () => {
     try {
-      // 生年月日、性別が選択されていることを確認する
       if (!selectBirthDate || !selectSex) {
         return alert("情報を設定してください");
       }
 
-      // 選択した値を状態にセット
       setPerson({
         birthDate: selectBirthDate,
         sex: selectSex,
       });
 
-      // 寿命を取得
-      const fetchData = await apiClient.get("/life/lifespan", {
-        params: { sex: selectSex, year: selectBirthDate },
-      });
-      const data = fetchData.data;
-      setLifeSpan(data.remainTime / (365 * 24 * 60 * 60));
-
-      // 初期化
       setSelectBirthDate(null);
       setSelectSex("");
-
       setShowModal(false);
     } catch (err) {
-      console.log("err: ", err);
+      console.error("err: ", err);
     }
   };
-
-  if (user && !person) {
-    setPerson({
-      birthDate: new Date(user.birthDate),
-      sex: user.sex,
-    });
-
-    // 寿命を取得
-    const getLife = async () => {
-      const fetchData = await apiClient.get("/life/lifespan", {
-        params: { year: new Date(user.birthDate), sex: user.sex },
-      });
-      const data = fetchData.data;
-      setLifeSpan(data.remainTime / (365 * 24 * 60 * 60));
-    };
-    getLife();
-  }
 
   useEffect(() => {
     if (!user) {
       setPerson(null);
+    } else {
+      setPerson({
+        birthDate: new Date(user.birthDate),
+        sex: user.sex as sexType,
+      });
     }
   }, [user]);
 
   return (
-    <Container>
-      {user && (
-        <div>
-          <Button
-            href="/persons"
-            variant="contained"
-            sx={{ marginTop: "1rem" }}
-          >
-            みんなの余命
-          </Button>
-        </div>
+    <Container
+      style={{ display: "flex", alignItems: "center", flexDirection: "column" }}
+    >
+      {user ? (
+        <Button href="/persons" variant="contained" sx={{ marginTop: "1rem" }}>
+          みんなの余命
+        </Button>
+      ) : (
+        <Button
+          variant="contained"
+          onClick={() => setShowModal(true)}
+          sx={{ marginTop: "1rem" }}
+        >
+          情報を設定
+        </Button>
       )}
-      <div>
+      <div style={{ marginTop: "20px" }}>
         {person && (
-          <div>
-            <p>
-              生年月日: {person.birthDate.toLocaleString("ja").split(" ")[0]}
-            </p>
-            <p>性別: {person.sex === "male" ? "男" : "女"}</p>
-            <p>
-              あなたに残された時間
-              <br />
-              <span>{lifeSpan}年</span>
-            </p>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "column",
+              backgroundColor: "#f0f0f0",
+              padding: "20px",
+              borderRadius: "10px",
+            }}
+          >
+            <div style={{ marginBottom: "20px", textAlign: "center" }}>
+              <Typography variant="subtitle1">
+                <span style={{ fontSize: "2rem" }}>
+                  {format(person.birthDate, "yyyy年MM月dd日")}
+                </span>{" "}
+                生まれ
+              </Typography>
+              <Typography variant="h5">
+                <span style={{ fontSize: "2rem" }}>
+                  {calculateAge(person.birthDate)}歳
+                </span>{" "}
+                の{person.sex === "male" ? "男性" : "女性"}
+              </Typography>
+            </div>
           </div>
         )}
-
-        {!user && (
-          <Button
-            variant="contained"
-            onClick={() => setShowModal(true)}
-            sx={{ marginTop: "1rem" }}
+        {person && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: "20px",
+            }}
           >
-            情報を設定
-          </Button>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontSize: "1.2rem",
+                alignItems: "center",
+                marginRight: "5px",
+              }}
+            >
+              <HourglassEmptyIcon sx={{ marginRight: "5px" }} />
+              <span>あなたに残された時間</span>
+            </Typography>
+            <br />
+            <RemainingLife person={person} />
+          </div>
         )}
       </div>
       {showModal && (
@@ -146,12 +163,29 @@ export default function Home() {
           <Modal open={showModal} onClose={() => setShowModal(false)}>
             <CenteredModalContainer>
               <div style={modalStyle}>
-                <DatePicker onChange={handleChangeBirth} />
-                <Select value={selectSex} onChange={handleChangeSex}>
-                  <MenuItem value={"male"}>男</MenuItem>
-                  <MenuItem value={"female"}>女</MenuItem>
-                </Select>
-                <Button variant="contained" onClick={handleSetting}>
+                <div style={{ marginBottom: "10px" }}>
+                  <Typography variant="h6" sx={{ marginBottom: "5px" }}>
+                    生年月日
+                  </Typography>
+                  <DatePicker
+                    value={selectBirthDate}
+                    onChange={handleChangeBirth}
+                  />
+                </div>
+                <div style={{ marginBottom: "10px" }}>
+                  <Typography variant="h6" sx={{ marginBottom: "5px" }}>
+                    性別
+                  </Typography>
+                  <Select value={selectSex} onChange={handleChangeSex}>
+                    <MenuItem value={"male"}>男</MenuItem>
+                    <MenuItem value={"female"}>女</MenuItem>
+                  </Select>
+                </div>
+                <Button
+                  variant="contained"
+                  onClick={handleSetting}
+                  sx={{ marginTop: "10px" }}
+                >
                   設定
                 </Button>
               </div>

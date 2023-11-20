@@ -3,6 +3,8 @@ import { Button, Container } from "@mui/material";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import apiClient from "../../lib/apiClient";
+import RemainingLife from "../../../components/RemainingLife";
+import { format } from "date-fns";
 
 type personData = {
   id: number;
@@ -20,28 +22,52 @@ const Persons = () => {
       // ユーザに紐づく登録人物の情報を取得
       const personsData = await apiClient.get("/persons/findAll");
 
-      // 人物情報を表示する形式に変換
-      const formattedPersonsData = personsData.data.formattedPersons.map(
-        (person) =>
-          person.sex === "male"
-            ? { ...person, sex: "男" }
-            : { ...person, sex: "女" }
-      );
-
-      setPersons(formattedPersonsData);
+      setPersons(personsData.data.formattedPersons);
     };
     setPersonData();
   }, [setPersons]);
 
+  // birthDate を "yyyy年MM月dd日" の形式にフォーマット
+  const formatBirthDate = (params: GridRenderCellParams<any>) => {
+    const formattedDate = format(
+      new Date(params.row.birthDate),
+      "yyyy年MM月dd日",
+    );
+    return formattedDate;
+  };
+
+  // 表のカラム設定
   const cols: GridColDef[] = [
     {
       field: "name",
       headerName: "名前",
       minWidth: 150,
     },
-    { field: "sex", headerName: "性別" },
-    { field: "birthDate", headerName: "生年月日", minWidth: 100 },
-    { field: "remainingLife", headerName: "余命", minWidth: 200 },
+    {
+      field: "sex",
+      headerName: "性別",
+      renderCell: (params: GridRenderCellParams<any>) => {
+        // 表示するsexをmale/femaleから男/女に変換
+        const formattedSex = params.row.sex === "male" ? "男" : "女";
+        return formattedSex;
+      },
+    },
+    {
+      field: "birthDate",
+      headerName: "生年月日",
+      minWidth: 150,
+      renderCell: formatBirthDate,
+    },
+    {
+      field: "remainingLife",
+      headerName: "余命",
+      minWidth: 250,
+      flex: 0.3,
+      renderCell: (params: GridRenderCellParams<any>) => (
+        // RemainingLifeコンポーネントにpersonを渡す
+        <RemainingLife person={{ ...params.row }} />
+      ),
+    },
     {
       field: "show",
       headerName: "詳細",
