@@ -4,7 +4,7 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 
 const prisma = new PrismaClient();
 
-router.get("/find/:id", async (req, res) => {
+router.get("/find/:id", isAuthenticated, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -36,7 +36,7 @@ router.get("/findAll", isAuthenticated, async (req, res) => {
       id: person.id,
       name: person.personName,
       sex: person.sex,
-      birthDate: person.birthDate.toLocaleString("ja").split(" ")[0],
+      birthDate: person.birthDate,
     }));
 
     res.status(200).json({ formattedPersons });
