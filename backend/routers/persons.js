@@ -88,4 +88,42 @@ router.post("/edit/:id", isAuthenticated, async (req, res) => {
   }
 });
 
+router.delete("/delete/:id", isAuthenticated, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body;
+
+    // 人物情報取得
+    const person = await prisma.person.findFirst({
+      where: {
+        id: Number(id),
+        userId: Number(userId),
+      },
+    });
+
+    // 人物情報が存在しない場合
+    if (!person) {
+      return res.status(404).json({ error: "選択された人物情報はありません" });
+    }
+
+    // 人物情報がユーザアカウントの場合
+    if (person.isAccountUser) {
+      return res
+        .status(403)
+        .json({ error: "ユーザアカウントは削除できません" });
+    }
+
+    // idに対応する人物情報を削除
+    await prisma.person.delete({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    res.status(200).json({ message: "OK" });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 module.exports = router;
