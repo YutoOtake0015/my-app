@@ -15,8 +15,9 @@ import BackLink from "../../components/BackLink";
 
 const MyPage = () => {
   const router = useRouter();
-
+  const { signout } = useAuth();
   const { user } = useAuth();
+
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string | null>("");
 
@@ -24,13 +25,13 @@ const MyPage = () => {
     e.preventDefault();
 
     try {
-      const response = await apiClient
+      await apiClient
         .post("/users/update", {
           id: user.id,
           email,
           password,
         })
-        .then((res) => {
+        .then(() => {
           alert("アカウント情報が変更されました");
           router.push("/");
         })
@@ -45,6 +46,39 @@ const MyPage = () => {
         });
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      // 削除確認
+      const confirmed = window.confirm("本当に削除しますか？");
+      if (confirmed) {
+        await apiClient
+          .delete("/users/delete/", {
+            data: {
+              id: user.id,
+            },
+          })
+          .then(() => {
+            alert("ユーザアカウトを削除しました");
+            signout();
+            router.push("/");
+          })
+          .catch((err) => {
+            if (err.response.status === 500) {
+              // サーバー側での問題が発生
+              alert("サーバーエラーが発生しました。");
+            } else {
+              // その他のエラー
+              alert(err.response.data.message || "エラーが発生しました");
+            }
+          });
+      } else {
+        alert("処理を中断しました");
+      }
+    } catch (err) {
+      alert("入力内容が正しくありません");
     }
   };
 
@@ -109,7 +143,16 @@ const MyPage = () => {
           </Button>
         </Box>
       </Box>
-      <BackLink />
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <BackLink />
+        <Button onClick={handleDeleteUser}>ユーザアカウント削除</Button>
+      </Box>
     </Container>
   );
 };
