@@ -75,4 +75,29 @@ router.post("/update", isAuthenticated, async (req, res) => {
   }
 });
 
+router.delete("/delete", isAuthenticated, async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    // ユーザ情報取得
+    const user = await prisma.user.findFirst({
+      where: { id: Number(id) },
+    });
+
+    // ユーザ情報の確認
+    if (!user) {
+      return res.status(404).json({ error: "アカウント情報が見つかりません" });
+    }
+
+    // idに対応するユーザ情報を削除
+    await prisma.user.delete({
+      where: { id: Number(id) },
+    });
+
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;
