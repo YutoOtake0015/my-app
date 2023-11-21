@@ -14,6 +14,7 @@ import {
 import { DatePicker } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
 import nookies from "nookies";
+import BackLink from "../../../components/BackLink";
 
 type sexType = "male" | "female";
 
@@ -26,7 +27,7 @@ export const getServerSideProps = async ({ req, params }) => {
   const token = req.headers.cookie
     ? req.headers.cookie.replace(
         /(?:(?:^|.*;\s*)auth_token\s*=\s*([^;]*).*$)|^.*$/,
-        "$1",
+        "$1"
       )
     : null;
 
@@ -159,6 +160,7 @@ const PersonPage = ({ person }) => {
           </Button>
         </Box>
       </Box>
+      <BackLink />
     </Container>
   );
 };

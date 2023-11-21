@@ -10,6 +10,7 @@ import Container from "@mui/material/Container";
 import apiClient from "../lib/apiClient";
 import { useRouter } from "next/router";
 import { useAuth } from "../context/auth";
+import BackLink from "../../components/BackLink";
 
 export default function SignIn() {
   const [email, setEmail] = useState<string>();
@@ -96,6 +97,7 @@ export default function SignIn() {
           </Grid>
         </Box>
       </Box>
+      <BackLink />
     </Container>
   );
 }

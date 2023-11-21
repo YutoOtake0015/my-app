@@ -11,9 +11,11 @@ import {
 import { useAuth } from "../context/auth";
 import apiClient from "../lib/apiClient";
 import { useRouter } from "next/router";
+import BackLink from "../../components/BackLink";
 
 const MyPage = () => {
   const router = useRouter();
+
   const { user } = useAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string | null>("");
@@ -107,6 +109,7 @@ const MyPage = () => {
           </Button>
         </Box>
       </Box>
+      <BackLink />
     </Container>
   );
 };

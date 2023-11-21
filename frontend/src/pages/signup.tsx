@@ -10,6 +10,7 @@ import apiClient from "../lib/apiClient";
 import { useRouter } from "next/router";
 import { MenuItem, Select } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
+import BackLink from "../../components/BackLink";
 
 type sexType = "male" | "female";
 
@@ -133,6 +134,7 @@ export default function SignUp() {
           </Button>
         </Box>
       </Box>
+      <BackLink />
     </Container>
   );
 }
