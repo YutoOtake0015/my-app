@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import apiClient from "../../lib/apiClient";
 import RemainingLife from "../../../components/RemainingLife";
 import { format } from "date-fns";
+import BackLink from "../../../components/BackLink";
 
 type personData = {
   id: number;
@@ -31,7 +32,7 @@ const Persons = () => {
   const formatBirthDate = (params: GridRenderCellParams<any>) => {
     const formattedDate = format(
       new Date(params.row.birthDate),
-      "yyyy年MM月dd日",
+      "yyyy年MM月dd日"
     );
     return formattedDate;
   };
@@ -107,6 +108,7 @@ const Persons = () => {
       ) : (
         <h1>読み込み中...</h1>
       )}
+      <BackLink />
     </Container>
   );
 };
