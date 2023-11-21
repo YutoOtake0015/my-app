@@ -1,36 +1,27 @@
-// components/BackLink.tsx
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";
-import { Box } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Button } from "@mui/material";
 
 const BackLink = () => {
   const router = useRouter();
-  const [prevPage, setPrevPage] = useState<string | null>(null);
-
-  useEffect(() => {
-    setPrevPage(router.asPath);
-  }, [router.asPath]);
 
   return (
-    <>
-      <Box>
-        <Link
-          href="#"
-          onClick={() => router.back()}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            textDecoration: "none",
-            color: "blue",
-          }}
-        >
-          <ArrowBackIcon style={{ marginRight: "5px" }} />
-          戻る
-        </Link>
-      </Box>
-    </>
+    <Button
+      onClick={() => router.back()}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        textDecoration: "none",
+        color: "blue",
+        border: "none",
+        backgroundColor: "transparent",
+        cursor: "pointer",
+      }}
+    >
+      <ArrowBackIcon style={{ marginRight: "5px" }} />
+      戻る
+    </Button>
   );
 };
 

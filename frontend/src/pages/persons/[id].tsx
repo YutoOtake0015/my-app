@@ -15,6 +15,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
 import nookies from "nookies";
 import BackLink from "../../../components/BackLink";
+import { useAuth } from "../../context/auth";
 
 type sexType = "male" | "female";
 
@@ -57,14 +58,15 @@ export const getServerSideProps = async ({ req, params }) => {
 
 const PersonPage = ({ person }) => {
   const router = useRouter();
+  const { user } = useAuth();
 
   // ユーザ情報
   const [personName, setPersonName] = useState<string>("");
   const [sex, setSex] = useState<sexType | "">("");
   const [birthDate, setBirthDate] = useState<Date>(null);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
     try {
       // アカウント新規登録APIを実行
@@ -76,7 +78,26 @@ const PersonPage = ({ person }) => {
 
       alert("人物情報を変更しました");
       router.push("/persons");
-    } catch (error) {
+    } catch (err) {
+      alert("入力内容が正しくありません");
+    }
+  };
+
+  const handleDeletePerson = async () => {
+    try {
+      // 削除確認
+      const confirmed = window.confirm("本当に削除しますか？");
+      if (confirmed) {
+        await apiClient.delete(`/persons/delete/${person.id}`, {
+          data: { userId: user.id },
+        });
+
+        alert("人物情報を削除しました");
+        router.push("/persons");
+      } else {
+        alert("処理を中断しました");
+      }
+    } catch (err) {
       alert("入力内容が正しくありません");
     }
   };
@@ -160,7 +181,18 @@ const PersonPage = ({ person }) => {
           </Button>
         </Box>
       </Box>
-      <BackLink />
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <BackLink />
+        {!person.isAccountUser && (
+          <Button onClick={handleDeletePerson}>削除</Button>
+        )}
+      </Box>
     </Container>
   );
 };
