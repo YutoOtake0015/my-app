@@ -1,4 +1,9 @@
-import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridRenderCellParams,
+  GridRowParams,
+} from "@mui/x-data-grid";
 import { Button, Container } from "@mui/material";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -6,6 +11,7 @@ import apiClient from "../../lib/apiClient";
 import RemainingLife from "../../../components/RemainingLife";
 import { format } from "date-fns";
 import BackLink from "../../../components/BackLink";
+import { useAuth } from "../../context/auth";
 
 type personData = {
   id: number;
@@ -13,26 +19,32 @@ type personData = {
   sex: string;
   birthDate: string;
   remainingLife: number;
+  isAccountUser: boolean;
 };
 
 const Persons = () => {
   const [persons, setPersons] = useState<personData[]>();
+  const { user } = useAuth();
 
   useEffect(() => {
     const setPersonData = async () => {
-      // ユーザに紐づく登録人物の情報を取得
-      const personsData = await apiClient.get("/persons/findAll");
+      if (user) {
+        // ユーザに紐づく登録人物の情報を取得
+        const personsData = await apiClient.get("/persons/findAll", {
+          data: { userId: user.id },
+        });
 
-      setPersons(personsData.data.formattedPersons);
+        setPersons(personsData.data.formattedPersons);
+      }
     };
     setPersonData();
-  }, [setPersons]);
+  }, [user, setPersons]);
 
   // birthDate を "yyyy年MM月dd日" の形式にフォーマット
   const formatBirthDate = (params: GridRenderCellParams<any>) => {
     const formattedDate = format(
       new Date(params.row.birthDate),
-      "yyyy年MM月dd日"
+      "yyyy年MM月dd日",
     );
     return formattedDate;
   };
@@ -45,8 +57,15 @@ const Persons = () => {
       minWidth: 150,
     },
     {
+      field: "birthDate",
+      headerName: "生年月日",
+      minWidth: 140,
+      renderCell: formatBirthDate,
+    },
+    {
       field: "sex",
       headerName: "性別",
+      width: 50,
       renderCell: (params: GridRenderCellParams<any>) => {
         // 表示するsexをmale/femaleから男/女に変換
         const formattedSex = params.row.sex === "male" ? "男" : "女";
@@ -54,15 +73,10 @@ const Persons = () => {
       },
     },
     {
-      field: "birthDate",
-      headerName: "生年月日",
-      minWidth: 150,
-      renderCell: formatBirthDate,
-    },
-    {
       field: "remainingLife",
       headerName: "余命",
-      minWidth: 250,
+      minWidth: 220,
+      width: 200,
       flex: 0.3,
       renderCell: (params: GridRenderCellParams<any>) => (
         // RemainingLifeコンポーネントにpersonを渡す
@@ -71,16 +85,16 @@ const Persons = () => {
     },
     {
       field: "show",
-      headerName: "詳細",
+      headerName: "",
       headerAlign: "center",
       align: "center",
       sortable: false,
-      minWidth: 100,
+      width: 30,
       flex: 0.3,
       renderCell: (params: GridRenderCellParams<any>) => (
         <>
           <Link className="text-blue-400" href={`/persons/${params.id}`}>
-            詳細
+            編集
           </Link>
         </>
       ),
@@ -103,6 +117,23 @@ const Persons = () => {
             rows={persons}
             density="compact"
             autoHeight
+            initialState={{
+              pagination: {
+                paginationModel: { pageSize: 10, page: 0 },
+              },
+            }}
+            sx={{
+              "& .user-row": {
+                background: "#00FFFF !important",
+              },
+            }}
+            // 特定の条件でclassを返す
+            getRowClassName={(params: GridRowParams) => {
+              if (params.row.isAccountUser) {
+                return "user-row";
+              }
+              return "";
+            }}
           />
         </div>
       ) : (
