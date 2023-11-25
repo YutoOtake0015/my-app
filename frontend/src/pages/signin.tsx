@@ -2,8 +2,6 @@ import { useState } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
@@ -38,6 +36,13 @@ export default function SignIn() {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    // Enterキー押下時、送信処理を抑制する
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -65,6 +70,9 @@ export default function SignIn() {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setEmail(e.target.value)
             }
+            onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
+              handleKeyDown(e)
+            }
           />
           <TextField
             margin="normal"
@@ -78,6 +86,9 @@ export default function SignIn() {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setPassword(e.target.value)
             }
+            onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
+              handleKeyDown(e)
+            }
           />
           <Button
             type="submit"
@@ -87,14 +98,6 @@ export default function SignIn() {
           >
             ログイン
           </Button>
-          <Grid container>
-            <Grid item xs>
-              パスワードを忘れた場合は
-              <Link href="#" variant="body2">
-                こちら
-              </Link>
-            </Grid>
-          </Grid>
         </Box>
       </Box>
       <BackLink />
