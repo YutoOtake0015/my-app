@@ -19,16 +19,16 @@ import { useAuth } from "../../context/auth";
 
 type sexType = "male" | "female";
 
-// サーバーサイドでのクッキーの取得
+// サーバーサイドでのCookieの取得
 export const getServerSideProps = async ({ req, params }) => {
   const { id } = params;
 
-  // サーバーサイドでは req.headers.cookie からクッキーを取得
-  const cookies = nookies.get(params);
+  // req.headers.cookie からCookieを取得
+  // getServerSideProps内ではLocalStorageにアクセスできないため、Cookieを使用
   const token = req.headers.cookie
     ? req.headers.cookie.replace(
         /(?:(?:^|.*;\s*)auth_token\s*=\s*([^;]*).*$)|^.*$/,
-        "$1"
+        "$1",
       )
     : null;
 
@@ -102,6 +102,13 @@ const PersonPage = ({ person }) => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    // Enterキー押下時、送信処理を抑制する
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
+
   useEffect(() => {
     if (person) {
       setPersonName(person.personName);
@@ -140,23 +147,42 @@ const PersonPage = ({ person }) => {
                 label="名前"
                 autoFocus
                 value={personName}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setPersonName(e.target.value)
-                }
                 InputLabelProps={{
                   shrink: !!personName,
                 }}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setPersonName(e.target.value)
+                }
+                onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
+                  handleKeyDown(e)
+                }
               />
             </Grid>
 
-            <Grid item xs={12} sm={8}>
+            <Grid
+              item
+              xs={12}
+              sm={8}
+              onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
+                handleKeyDown(e)
+              }
+            >
               <DatePicker
                 label="生年月日"
-                onChange={(e: Date) => setBirthDate(e as Date)}
                 value={birthDate}
+                closeOnSelect={false}
+                onChange={(e: Date) => setBirthDate(e as Date)}
               />
             </Grid>
-            <Grid item xs={12} sm={4}>
+
+            <Grid
+              item
+              xs={12}
+              sm={4}
+              onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
+                handleKeyDown(e)
+              }
+            >
               <Select
                 value={sex}
                 required
