@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  Box,
   Button,
   Container,
   MenuItem,
@@ -13,7 +14,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { useAuth } from "../context/auth";
 import RemainingLife from "../../components/RemainingLife";
 import { format, differenceInYears } from "date-fns";
-import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
+import HistoryToggleOffIcon from "@mui/icons-material/HistoryToggleOff";
 
 type sexType = "male" | "female";
 
@@ -121,41 +122,46 @@ export default function Home() {
               <Typography variant="subtitle1">
                 <span style={{ fontSize: "2rem" }}>
                   {format(person.birthDate, "yyyy年MM月dd日")}
-                </span>{" "}
+                </span>
                 生まれ
               </Typography>
               <Typography variant="h5">
                 <span style={{ fontSize: "2rem" }}>
                   {calculateAge(person.birthDate)}歳
-                </span>{" "}
+                </span>
                 の{person.sex === "male" ? "男性" : "女性"}
               </Typography>
             </div>
           </div>
         )}
         {person && (
-          <div
-            style={{
+          <Box
+            sx={{
               display: "flex",
+              flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              marginTop: "20px",
+              marginTop: "1rem",
             }}
           >
             <Typography
               variant="subtitle1"
               sx={{
-                fontSize: "1.2rem",
+                display: "flex",
+                fontSize: "2rem",
+                fontWeight: "bold",
                 alignItems: "center",
-                marginRight: "5px",
               }}
             >
-              <HourglassEmptyIcon sx={{ marginRight: "5px" }} />
-              <span>あなたに残された時間</span>
+              <HistoryToggleOffIcon
+                sx={{ marginRight: "0.5rem", fontSize: "2.5rem" }}
+              />
+              あなたに残された時間
             </Typography>
-            <br />
-            <RemainingLife person={person} />
-          </div>
+            <Typography sx={{ fontSize: "1.5rem" }}>
+              <RemainingLife person={person} />
+            </Typography>
+          </Box>
         )}
       </div>
       {showModal && (

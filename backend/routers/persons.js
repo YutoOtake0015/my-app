@@ -28,6 +28,7 @@ router.get("/findAll", isAuthenticated, async (req, res) => {
         personName: true,
         sex: true,
         birthDate: true,
+        isAccountUser: true,
       },
     });
 
@@ -37,6 +38,7 @@ router.get("/findAll", isAuthenticated, async (req, res) => {
       name: person.personName,
       sex: person.sex,
       birthDate: person.birthDate,
+      isAccountUser: person.isAccountUser,
     }));
 
     res.status(200).json({ formattedPersons });

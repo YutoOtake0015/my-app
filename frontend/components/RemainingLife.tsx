@@ -1,8 +1,12 @@
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import apiClient from "../src/lib/apiClient";
+import { Box } from "@mui/material";
 
-const timeStyle = { width: "1.2rem", display: "inline-block" };
+const timeStyle = {
+  display: "inline-block",
+  textAlign: "right" as const,
+};
 
 const RemainingLife = ({ person }) => {
   const router = useRouter();
@@ -47,8 +51,8 @@ const RemainingLife = ({ person }) => {
     const secondsInMinute = 60;
     const secondsInHour = 60 * secondsInMinute;
     const secondsInDay = 24 * secondsInHour;
-    const secondsInMonth = 30 * secondsInDay; // 簡易的な月の秒数
-    const secondsInYear = 365 * secondsInDay; // 簡易的な年の秒数
+    const secondsInMonth = 30 * secondsInDay;
+    const secondsInYear = 365 * secondsInDay;
 
     // カウントダウン処理
     const countdownInterval = setInterval(() => {
@@ -89,16 +93,26 @@ const RemainingLife = ({ person }) => {
     }, 1000); // 1秒ごとに更新
   };
 
+  const formatNumber = (value: number): string => {
+    if (!value) {
+      return "00";
+    }
+    return value.toString().padStart(2, "0");
+  };
+
   return (
     <>
-      <span style={timeStyle}>{year}</span>年
-      <span style={timeStyle}>{month}</span>
-      ヵ月
-      <span style={timeStyle}>{day}</span>日
-      <span style={timeStyle}>{hour}</span>
-      時間
-      <span style={timeStyle}>{minute}</span>分
-      <span style={timeStyle}>{second}</span>秒
+      <Box sx={{ display: "flex", textAlign: "center" }}>
+        <span style={timeStyle}>{formatNumber(year)}年</span>
+        <span style={timeStyle}>
+          {formatNumber(month)}
+          ヵ月
+        </span>
+        <span style={timeStyle}>{formatNumber(day)}日</span>
+        <span style={timeStyle}>{formatNumber(hour)}時間</span>
+        <span style={timeStyle}>{formatNumber(minute)}分</span>
+        <span style={timeStyle}>{formatNumber(second)}秒</span>
+      </Box>
     </>
   );
 };
