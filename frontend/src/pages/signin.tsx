@@ -11,8 +11,12 @@ import { useAuth } from "../context/auth";
 import BackLink from "../../components/BackLink";
 
 export default function SignIn() {
+  // アカウント情報
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
+
+  // エラー表示
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
   const router = useRouter();
 
@@ -22,17 +26,41 @@ export default function SignIn() {
     event.preventDefault();
     try {
       // サインインAPIを実行
-      const response = await apiClient.post("/auth/signin", {
-        email,
-        password,
-      });
-      const token = response.data.token;
+      await apiClient
+        .post("/auth/signin", {
+          email,
+          password,
+        })
+        .then((res) => {
+          const token = res.data.token;
 
-      signin(token);
-
-      router.push("/");
+          signin(token);
+          router.push("/");
+        })
+        .catch((err) => {
+          handleErrorResponse(err);
+        });
     } catch (error) {
-      alert("入力内容が正しくありません");
+      alert("予期せぬエラーが発生しました。\nもう一度やり直してください。");
+    }
+  };
+
+  const handleErrorResponse = (err) => {
+    console.log("err.response.status: ", err.response.status);
+    switch (err.response.status) {
+      case 500:
+        alert("サーバで問題が発生しました。\nもう一度やり直してください。");
+        router.push("/signin");
+        break;
+      case 400:
+        setValidationErrors(err.response.data.messages);
+        break;
+      case 401:
+        alert(err.response.data.message);
+        setValidationErrors([]);
+        break;
+      default:
+        alert("予期せぬエラーが発生しました。\nもう一度やり直してください。");
     }
   };
 
@@ -57,6 +85,15 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           アカウントにログイン
         </Typography>
+        {validationErrors.length > 0 && (
+          <Box style={{ color: "red" }}>
+            <ul>
+              {validationErrors.map((error, index) => (
+                <li key={index}>{error}</li>
+              ))}
+            </ul>
+          </Box>
+        )}
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"

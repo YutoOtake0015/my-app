@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const { PrismaClient } = require("@prisma/client");
 const isAuthenticated = require("../middlewares/isAuthenticated");
+const createPersonSchema = require("../validators/createPersonSchema");
+const editPersonSchema = require("../validators/editPersonSchema");
 
 const prisma = new PrismaClient();
 
@@ -48,10 +50,25 @@ router.get("/findAll", isAuthenticated, async (req, res) => {
 });
 
 router.post("/create", isAuthenticated, async (req, res) => {
-  const { personName, sex, birthDate, userId } = req.body;
-
   try {
-    const persons = await prisma.person.create({
+    // バリデーション
+    const { error, value } = createPersonSchema.validate(req.body, {
+      abortEarly: false,
+    });
+
+    console.log("error: ", error);
+
+    if (error) {
+      return res
+        .status(400)
+        .json({ messages: error.details.map((detail) => detail.message) });
+    }
+
+    // リクエスト取得
+    const { personName, sex, birthDate, userId } = value;
+
+    // 人物情報登録
+    await prisma.person.create({
       data: {
         personName,
         sex,
@@ -61,7 +78,7 @@ router.post("/create", isAuthenticated, async (req, res) => {
       },
     });
 
-    res.status(200).json({ persons });
+    res.status(200).json({ message: "人物情報を登録しました" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -69,8 +86,28 @@ router.post("/create", isAuthenticated, async (req, res) => {
 
 router.post("/edit/:id", isAuthenticated, async (req, res) => {
   try {
-    const { personName, sex, birthDate } = req.body;
-    const { id } = req.params;
+    // バリデーション
+    const { error, value } = editPersonSchema.validate(
+      {
+        params: req.params,
+        body: req.body,
+      },
+      {
+        abortEarly: false,
+      },
+    );
+
+    console.log("error: ", error);
+
+    if (error) {
+      return res
+        .status(400)
+        .json({ messages: error.details.map((detail) => detail.message) });
+    }
+
+    // リクエスト取得
+    const { id } = value.params;
+    const { personName, sex, birthDate } = value.body;
 
     // idに対応する人物情報を更新
     await prisma.person.update({
@@ -84,9 +121,9 @@ router.post("/edit/:id", isAuthenticated, async (req, res) => {
       },
     });
 
-    res.status(200).json({ message: "OK" });
+    res.status(200).json({ message: "人物情報を更新しました" });
   } catch (err) {
-    console.log(err);
+    res.status(500).json({ message: err.message });
   }
 });
 

@@ -65,19 +65,27 @@ const PersonPage = ({ person }) => {
   const [sex, setSex] = useState<sexType | "">("");
   const [birthDate, setBirthDate] = useState<Date>(null);
 
+  // エラー表示
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
       // アカウント新規登録APIを実行
-      await apiClient.post(`/persons/edit/${person.id}`, {
-        personName,
-        birthDate,
-        sex,
-      });
-
-      alert("人物情報を変更しました");
-      router.push("/persons");
+      await apiClient
+        .post(`/persons/edit/${person.id}`, {
+          personName,
+          birthDate,
+          sex,
+        })
+        .then((res) => {
+          alert(res.data.message);
+          router.push("/persons");
+        })
+        .catch((err) => {
+          handleErrorResponse(err);
+        });
     } catch (err) {
       alert("入力内容が正しくありません");
     }
@@ -98,7 +106,21 @@ const PersonPage = ({ person }) => {
         alert("処理を中断しました");
       }
     } catch (err) {
-      alert("入力内容が正しくありません");
+      alert("予期せぬエラーが発生しました。\nもう一度やり直してください。");
+    }
+  };
+
+  const handleErrorResponse = (err) => {
+    switch (err.response.status) {
+      case 500:
+        alert("サーバで問題が発生しました。\nもう一度やり直してください。");
+        router.push("/persons/create");
+        break;
+      case 400:
+        setValidationErrors(err.response.data.messages);
+        break;
+      default:
+        alert("予期せぬエラーが発生しました。\nもう一度やり直してください。");
     }
   };
 
@@ -135,6 +157,15 @@ const PersonPage = ({ person }) => {
         <Typography component="h1" variant="h5">
           情報編集
         </Typography>
+        {validationErrors.length > 0 && (
+          <Box style={{ color: "red" }}>
+            <ul>
+              {validationErrors.map((error, index) => (
+                <li key={index}>{error}</li>
+              ))}
+            </ul>
+          </Box>
+        )}
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
