@@ -18,8 +18,12 @@ const MyPage = () => {
   const { signout } = useAuth();
   const { user } = useAuth();
 
+  // アカウント情報
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string | null>("");
+
+  // エラー表示
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,21 +35,35 @@ const MyPage = () => {
           email,
           password,
         })
-        .then(() => {
-          alert("アカウント情報が変更されました");
+        .then((res) => {
+          alert(res.data.message);
           router.push("/");
         })
         .catch((err) => {
-          if (err.response.status === 500) {
-            // サーバー側での問題が発生
-            alert("サーバーエラーが発生しました。");
-          } else {
-            // その他のエラー
-            alert(err.response.data.message || "エラーが発生しました");
-          }
+          handleErrorResponse(err);
         });
     } catch (err) {
-      console.error(err);
+      alert("予期せぬエラーが発生しました。\nもう一度やり直してください。");
+    }
+  };
+
+  const handleErrorResponse = (err) => {
+    switch (err.response.status) {
+      case 500:
+        alert("サーバで問題が発生しました。\nもう一度やり直してください。");
+        router.push("/mypage");
+        break;
+      case 400:
+        err.response.data.message
+          ? alert(err.response.data.message)
+          : setValidationErrors(err.response.data.messages);
+        break;
+      case 401:
+        alert(err.response.data.message);
+        setValidationErrors([]);
+        break;
+      default:
+        alert("予期せぬエラーが発生しました。\nもう一度やり直してください。");
     }
   };
 
@@ -109,6 +127,15 @@ const MyPage = () => {
         <Typography component="h1" variant="h5">
           アカウントを編集
         </Typography>
+        {validationErrors.length > 0 && (
+          <Box style={{ color: "red" }}>
+            <ul>
+              {validationErrors.map((error, index) => (
+                <li key={index}>{error}</li>
+              ))}
+            </ul>
+          </Box>
+        )}
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>

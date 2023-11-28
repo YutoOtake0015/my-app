@@ -27,20 +27,43 @@ const CreatePersonData = () => {
   const [sex, setSex] = useState<sexType | "">("");
   const [birthDate, setBirthDate] = useState<Date>(null);
 
+  // エラー表示
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
       // アカウント新規登録APIを実行
-      await apiClient.post("/persons/create", {
-        personName,
-        birthDate,
-        sex,
-        userId: user.id,
-      });
-      router.push("/persons");
-    } catch (error) {
-      alert("入力内容が正しくありません");
+      await apiClient
+        .post("/persons/create", {
+          personName,
+          birthDate,
+          sex,
+          userId: user.id,
+        })
+        .then(() => {
+          router.push("/persons");
+        })
+        .catch((err) => {
+          handleErrorResponse(err);
+        });
+    } catch (err) {
+      alert("予期せぬエラーが発生しました。\nもう一度やり直してください。");
+    }
+  };
+
+  const handleErrorResponse = (err) => {
+    switch (err.response.status) {
+      case 500:
+        alert("サーバで問題が発生しました。\nもう一度やり直してください。");
+        router.push("/persons/create");
+        break;
+      case 400:
+        setValidationErrors(err.response.data.messages);
+        break;
+      default:
+        alert("予期せぬエラーが発生しました。\nもう一度やり直してください。");
     }
   };
 
@@ -66,6 +89,15 @@ const CreatePersonData = () => {
           <Typography component="h1" variant="h5">
             余命を登録しましょう
           </Typography>
+          {validationErrors.length > 0 && (
+            <Box style={{ color: "red" }}>
+              <ul>
+                {validationErrors.map((error, index) => (
+                  <li key={index}>{error}</li>
+                ))}
+              </ul>
+            </Box>
+          )}
           <Box
             component="form"
             noValidate

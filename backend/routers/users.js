@@ -2,6 +2,7 @@ const router = require("express").Router();
 const bcrypt = require("bcrypt");
 const { PrismaClient } = require("@prisma/client");
 const isAuthenticated = require("../middlewares/isAuthenticated");
+const editUserSchema = require("../validators/editUserSchema");
 
 const prisma = new PrismaClient();
 
@@ -39,7 +40,19 @@ router.get("/find", isAuthenticated, async (req, res) => {
 
 router.post("/update", isAuthenticated, async (req, res) => {
   try {
-    const { id, email, password } = req.body;
+    // バリデーション
+    const { error, value } = editUserSchema.validate(req.body, {
+      abortEarly: false,
+    });
+
+    if (error) {
+      return res
+        .status(400)
+        .json({ messages: error.details.map((detail) => detail.message) });
+    }
+
+    // リクエスト取得
+    const { id, email, password } = value;
 
     // emailがユーザの登録しているメールアドレスであることを確認
     const existUser = await prisma.user.findFirst({
@@ -69,7 +82,7 @@ router.post("/update", isAuthenticated, async (req, res) => {
       },
     });
 
-    res.status(200).json(this.user);
+    res.status(200).json({ message: "ユーザ情報を更新しました" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

@@ -1,6 +1,7 @@
 import React, { ReactNode, useContext, useEffect, useState } from "react";
 import apiClient from "../lib/apiClient";
 import nookies from "nookies";
+import { useRouter } from "next/router";
 
 interface AuthContextType {
   user: null | {
@@ -29,6 +30,8 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const router = useRouter();
+
   const [user, setUser] = useState<null | {
     id: number;
     email: string;
@@ -49,8 +52,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         .then((res) => {
           setUser(res.data.user);
         })
-        .catch((err) => {
-          console.log(err);
+        .catch(() => {
+          alert("予期しないエラーによりシステムとの通信が切断されました。");
+
+          // tokenがある場合は、ブラウザからtokenを削除してトップページへ
+          token ? router.push("/signout") : router.push("/");
         });
     }
   }, []);
