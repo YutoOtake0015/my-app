@@ -43,6 +43,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     // 認証トークンを取得
     const token = localStorage.getItem("auth_token");
+    console.log("token: ", token);
     if (token) {
       apiClient.defaults.headers["Authorization"] = `Bearer ${token}`;
 
@@ -53,10 +54,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           setUser(res.data.user);
         })
         .catch(() => {
-          alert("予期しないエラーによりシステムとの通信が切断されました。");
+          alert(
+            "システムとの通信が切断されました。\nログインからやり直してください。",
+          );
 
           // tokenがある場合は、ブラウザからtokenを削除してトップページへ
-          token ? router.push("/signout") : router.push("/");
+          token ? signout() : router.push("/");
         });
     }
   }, []);
