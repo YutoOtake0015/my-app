@@ -16,6 +16,7 @@ import { useRouter } from "next/router";
 import nookies from "nookies";
 import BackLink from "../../../components/BackLink";
 import { useAuth } from "../../context/auth";
+import PageHead from "../../../components/PageHead";
 
 type sexType = "male" | "female";
 
@@ -28,7 +29,7 @@ export const getServerSideProps = async ({ req, params }) => {
   const token = req.headers.cookie
     ? req.headers.cookie.replace(
         /(?:(?:^|.*;\s*)auth_token\s*=\s*([^;]*).*$)|^.*$/,
-        "$1",
+        "$1"
       )
     : null;
 
@@ -144,113 +145,123 @@ const PersonPage = ({ person }) => {
   }, []);
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <Box
-        sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Typography component="h1" variant="h5">
-          情報編集
-        </Typography>
-        {validationErrors.length > 0 && (
-          <Box style={{ color: "red" }}>
-            <ul>
-              {validationErrors.map((error, index) => (
-                <li key={index}>{error}</li>
-              ))}
-            </ul>
-          </Box>
-        )}
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                autoComplete="given-name"
-                name="name"
-                required
-                fullWidth
-                id="name"
-                label="名前"
-                autoFocus
-                value={personName}
-                InputLabelProps={{
-                  shrink: !!personName,
-                }}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setPersonName(e.target.value)
-                }
+    <>
+      <PageHead>
+        <title>情報編集</title>
+      </PageHead>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography component="h1" variant="h5">
+            情報編集
+          </Typography>
+          {validationErrors.length > 0 && (
+            <Box style={{ color: "red" }}>
+              <ul>
+                {validationErrors.map((error, index) => (
+                  <li key={index}>{error}</li>
+                ))}
+              </ul>
+            </Box>
+          )}
+          <Box
+            component="form"
+            noValidate
+            onSubmit={handleSubmit}
+            sx={{ mt: 3 }}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  autoComplete="given-name"
+                  name="name"
+                  required
+                  fullWidth
+                  id="name"
+                  label="名前"
+                  autoFocus
+                  value={personName}
+                  InputLabelProps={{
+                    shrink: !!personName,
+                  }}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPersonName(e.target.value)
+                  }
+                  onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
+                    handleKeyDown(e)
+                  }
+                />
+              </Grid>
+
+              <Grid
+                item
+                xs={12}
+                sm={8}
                 onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
                   handleKeyDown(e)
                 }
-              />
-            </Grid>
+              >
+                <DatePicker
+                  label="生年月日"
+                  value={birthDate}
+                  closeOnSelect={false}
+                  onChange={(e: Date) => setBirthDate(e as Date)}
+                />
+              </Grid>
 
-            <Grid
-              item
-              xs={12}
-              sm={8}
-              onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                handleKeyDown(e)
-              }
-            >
-              <DatePicker
-                label="生年月日"
-                value={birthDate}
-                closeOnSelect={false}
-                onChange={(e: Date) => setBirthDate(e as Date)}
-              />
-            </Grid>
-
-            <Grid
-              item
-              xs={12}
-              sm={4}
-              onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                handleKeyDown(e)
-              }
-            >
-              <Select
-                value={sex}
-                required
-                label="性別"
-                fullWidth
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setSex(e.target.value as sexType)
+              <Grid
+                item
+                xs={12}
+                sm={4}
+                onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
+                  handleKeyDown(e)
                 }
               >
-                <MenuItem value={"male"}>男</MenuItem>
-                <MenuItem value={"female"}>女</MenuItem>
-              </Select>
+                <Select
+                  value={sex}
+                  required
+                  label="性別"
+                  fullWidth
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setSex(e.target.value as sexType)
+                  }
+                >
+                  <MenuItem value={"male"}>男</MenuItem>
+                  <MenuItem value={"female"}>女</MenuItem>
+                </Select>
+              </Grid>
             </Grid>
-          </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            編集
-          </Button>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              編集
+            </Button>
+          </Box>
         </Box>
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <BackLink />
-        {!person.isAccountUser && (
-          <Button onClick={handleDeletePerson}>削除</Button>
-        )}
-      </Box>
-    </Container>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <BackLink />
+          {!person.isAccountUser && (
+            <Button onClick={handleDeletePerson}>削除</Button>
+          )}
+        </Box>
+      </Container>
+    </>
   );
 };
 

@@ -12,6 +12,7 @@ import RemainingLife from "../../../components/RemainingLife";
 import { format } from "date-fns";
 import BackLink from "../../../components/BackLink";
 import { useAuth } from "../../context/auth";
+import PageHead from "../../../components/PageHead";
 
 type personData = {
   id: number;
@@ -44,7 +45,7 @@ const Persons = () => {
   const formatBirthDate = (params: GridRenderCellParams<any>) => {
     const formattedDate = format(
       new Date(params.row.birthDate),
-      "yyyy年MM月dd日",
+      "yyyy年MM月dd日"
     );
     return formattedDate;
   };
@@ -102,45 +103,50 @@ const Persons = () => {
   ];
 
   return (
-    <Container>
-      <Button
-        href="/persons/create"
-        variant="contained"
-        sx={{ marginTop: "1rem" }}
-      >
-        新規登録
-      </Button>
-      {persons ? (
-        <div>
-          <DataGrid
-            columns={cols}
-            rows={persons}
-            density="compact"
-            autoHeight
-            initialState={{
-              pagination: {
-                paginationModel: { pageSize: 10, page: 0 },
-              },
-            }}
-            sx={{
-              "& .user-row": {
-                background: "#00FFFF !important",
-              },
-            }}
-            // 特定の条件でclassを返す
-            getRowClassName={(params: GridRowParams) => {
-              if (params.row.isAccountUser) {
-                return "user-row";
-              }
-              return "";
-            }}
-          />
-        </div>
-      ) : (
-        <h1>読み込み中...</h1>
-      )}
-      <BackLink />
-    </Container>
+    <>
+      <PageHead>
+        <title>余命一覧</title>
+      </PageHead>
+      <Container>
+        <Button
+          href="/persons/create"
+          variant="contained"
+          sx={{ marginTop: "1rem" }}
+        >
+          新規登録
+        </Button>
+        {persons ? (
+          <div>
+            <DataGrid
+              columns={cols}
+              rows={persons}
+              density="compact"
+              autoHeight
+              initialState={{
+                pagination: {
+                  paginationModel: { pageSize: 10, page: 0 },
+                },
+              }}
+              sx={{
+                "& .user-row": {
+                  background: "#00FFFF !important",
+                },
+              }}
+              // 特定の条件でclassを返す
+              getRowClassName={(params: GridRowParams) => {
+                if (params.row.isAccountUser) {
+                  return "user-row";
+                }
+                return "";
+              }}
+            />
+          </div>
+        ) : (
+          <h1>読み込み中...</h1>
+        )}
+        <BackLink />
+      </Container>
+    </>
   );
 };
 

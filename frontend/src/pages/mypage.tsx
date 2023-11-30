@@ -12,6 +12,7 @@ import { useAuth } from "../context/auth";
 import apiClient from "../lib/apiClient";
 import { useRouter } from "next/router";
 import BackLink from "../../components/BackLink";
+import PageHead from "../../components/PageHead";
 
 const MyPage = () => {
   const router = useRouter();
@@ -114,86 +115,96 @@ const MyPage = () => {
   }, [user]);
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <Box
-        sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Typography component="h1" variant="h5">
-          アカウントを編集
-        </Typography>
-        {validationErrors.length > 0 && (
-          <Box style={{ color: "red" }}>
-            <ul>
-              {validationErrors.map((error, index) => (
-                <li key={index}>{error}</li>
-              ))}
-            </ul>
-          </Box>
-        )}
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="email"
-                label="メールアドレス"
-                name="email"
-                autoComplete="email"
-                value={email}
-                InputLabelProps={{
-                  shrink: !!email,
-                }}
-                onChange={(e) => setEmail(e.target.value)}
-                onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                  handleKeyDown(e)
-                }
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="password"
-                label="パスワード"
-                type="password"
-                id="password"
-                autoComplete="new-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                  handleKeyDown(e)
-                }
-              />
-            </Grid>
-          </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+    <>
+      <PageHead>
+        <title>マイページ</title>
+      </PageHead>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography component="h1" variant="h5">
+            アカウントを編集
+          </Typography>
+          {validationErrors.length > 0 && (
+            <Box style={{ color: "red" }}>
+              <ul>
+                {validationErrors.map((error, index) => (
+                  <li key={index}>{error}</li>
+                ))}
+              </ul>
+            </Box>
+          )}
+          <Box
+            component="form"
+            noValidate
+            onSubmit={handleSubmit}
+            sx={{ mt: 3 }}
           >
-            変更
-          </Button>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="email"
+                  label="メールアドレス"
+                  name="email"
+                  autoComplete="email"
+                  value={email}
+                  InputLabelProps={{
+                    shrink: !!email,
+                  }}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
+                    handleKeyDown(e)
+                  }
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="password"
+                  label="パスワード"
+                  type="password"
+                  id="password"
+                  autoComplete="new-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
+                    handleKeyDown(e)
+                  }
+                />
+              </Grid>
+            </Grid>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              変更
+            </Button>
+          </Box>
         </Box>
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <BackLink />
-        <Button onClick={handleDeleteUser}>ユーザアカウント削除</Button>
-      </Box>
-    </Container>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <BackLink />
+          <Button onClick={handleDeleteUser}>ユーザアカウント削除</Button>
+        </Box>
+      </Container>
+    </>
   );
 };
 
