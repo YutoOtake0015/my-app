@@ -15,6 +15,7 @@ import { useAuth } from "../context/auth";
 import RemainingLife from "../../components/RemainingLife";
 import { format, differenceInYears } from "date-fns";
 import HistoryToggleOffIcon from "@mui/icons-material/HistoryToggleOff";
+import PageHead from "../../components/PageHead";
 
 type sexType = "male" | "female";
 
@@ -90,115 +91,128 @@ export default function Home() {
   }, [user]);
 
   return (
-    <Container
-      style={{ display: "flex", alignItems: "center", flexDirection: "column" }}
-    >
-      {user ? (
-        <Button href="/persons" variant="contained" sx={{ marginTop: "1rem" }}>
-          みんなの余命
-        </Button>
-      ) : (
-        <Button
-          variant="contained"
-          onClick={() => setShowModal(true)}
-          sx={{ marginTop: "1rem" }}
-        >
-          情報を設定
-        </Button>
-      )}
-      <div style={{ marginTop: "20px" }}>
-        {person && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              flexDirection: "column",
-              backgroundColor: "#f0f0f0",
-              padding: "20px",
-              borderRadius: "10px",
-            }}
+    <>
+      <PageHead>
+        <title>あなたの余命</title>
+      </PageHead>
+      <Container
+        style={{
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
+        {user ? (
+          <Button
+            href="/persons"
+            variant="contained"
+            sx={{ marginTop: "1rem" }}
           >
-            <div style={{ marginBottom: "20px", textAlign: "center" }}>
-              <Typography variant="subtitle1">
-                <span style={{ fontSize: "2rem" }}>
-                  {format(person.birthDate, "yyyy年MM月dd日")}
-                </span>
-                生まれ
-              </Typography>
-              <Typography variant="h5">
-                <span style={{ fontSize: "2rem" }}>
-                  {calculateAge(person.birthDate)}歳
-                </span>
-                の{person.sex === "male" ? "男性" : "女性"}
-              </Typography>
-            </div>
-          </div>
+            みんなの余命
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            onClick={() => setShowModal(true)}
+            sx={{ marginTop: "1rem" }}
+          >
+            情報を設定
+          </Button>
         )}
-        {person && (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: "1rem",
-            }}
-          >
-            <Typography
-              variant="subtitle1"
-              sx={{
+        <div style={{ marginTop: "20px" }}>
+          {person && (
+            <div
+              style={{
                 display: "flex",
-                fontSize: "2rem",
-                fontWeight: "bold",
                 alignItems: "center",
+                flexDirection: "column",
+                backgroundColor: "#f0f0f0",
+                padding: "20px",
+                borderRadius: "10px",
               }}
             >
-              <HistoryToggleOffIcon
-                sx={{ marginRight: "0.5rem", fontSize: "2.5rem" }}
-              />
-              あなたに残された時間
-            </Typography>
-            <Typography sx={{ fontSize: "1.5rem" }}>
-              <RemainingLife person={person} />
-            </Typography>
-          </Box>
-        )}
-      </div>
-      {showModal && (
-        <>
-          <Modal open={showModal} onClose={() => setShowModal(false)}>
-            <CenteredModalContainer>
-              <div style={modalStyle}>
-                <div style={{ marginBottom: "10px" }}>
-                  <Typography variant="h6" sx={{ marginBottom: "5px" }}>
-                    生年月日
-                  </Typography>
-                  <DatePicker
-                    value={selectBirthDate}
-                    onChange={handleChangeBirth}
-                  />
-                </div>
-                <div style={{ marginBottom: "10px" }}>
-                  <Typography variant="h6" sx={{ marginBottom: "5px" }}>
-                    性別
-                  </Typography>
-                  <Select value={selectSex} onChange={handleChangeSex}>
-                    <MenuItem value={"male"}>男</MenuItem>
-                    <MenuItem value={"female"}>女</MenuItem>
-                  </Select>
-                </div>
-                <Button
-                  variant="contained"
-                  onClick={handleSetting}
-                  sx={{ marginTop: "10px" }}
-                >
-                  設定
-                </Button>
+              <div style={{ marginBottom: "20px", textAlign: "center" }}>
+                <Typography variant="subtitle1">
+                  <span style={{ fontSize: "2rem" }}>
+                    {format(person.birthDate, "yyyy年MM月dd日")}
+                  </span>
+                  生まれ
+                </Typography>
+                <Typography variant="h5">
+                  <span style={{ fontSize: "2rem" }}>
+                    {calculateAge(person.birthDate)}歳
+                  </span>
+                  の{person.sex === "male" ? "男性" : "女性"}
+                </Typography>
               </div>
-            </CenteredModalContainer>
-          </Modal>
-        </>
-      )}
-    </Container>
+            </div>
+          )}
+          {person && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: "1rem",
+              }}
+            >
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  display: "flex",
+                  fontSize: "2rem",
+                  fontWeight: "bold",
+                  alignItems: "center",
+                }}
+              >
+                <HistoryToggleOffIcon
+                  sx={{ marginRight: "0.5rem", fontSize: "2.5rem" }}
+                />
+                あなたに残された時間
+              </Typography>
+              <Typography sx={{ fontSize: "1.5rem" }}>
+                <RemainingLife person={person} />
+              </Typography>
+            </Box>
+          )}
+        </div>
+        {showModal && (
+          <>
+            <Modal open={showModal} onClose={() => setShowModal(false)}>
+              <CenteredModalContainer>
+                <div style={modalStyle}>
+                  <div style={{ marginBottom: "10px" }}>
+                    <Typography variant="h6" sx={{ marginBottom: "5px" }}>
+                      生年月日
+                    </Typography>
+                    <DatePicker
+                      value={selectBirthDate}
+                      onChange={handleChangeBirth}
+                    />
+                  </div>
+                  <div style={{ marginBottom: "10px" }}>
+                    <Typography variant="h6" sx={{ marginBottom: "5px" }}>
+                      性別
+                    </Typography>
+                    <Select value={selectSex} onChange={handleChangeSex}>
+                      <MenuItem value={"male"}>男</MenuItem>
+                      <MenuItem value={"female"}>女</MenuItem>
+                    </Select>
+                  </div>
+                  <Button
+                    variant="contained"
+                    onClick={handleSetting}
+                    sx={{ marginTop: "10px" }}
+                  >
+                    設定
+                  </Button>
+                </div>
+              </CenteredModalContainer>
+            </Modal>
+          </>
+        )}
+      </Container>
+    </>
   );
 }

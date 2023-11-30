@@ -15,6 +15,7 @@ import apiClient from "../../lib/apiClient";
 import { useRouter } from "next/router";
 import { useAuth } from "../../context/auth";
 import BackLink from "../../../components/BackLink";
+import PageHead from "../../../components/PageHead";
 
 type sexType = "male" | "female";
 
@@ -75,7 +76,10 @@ const CreatePersonData = () => {
   };
 
   return (
-    <div>
+    <>
+      <PageHead>
+        <title>余命登録</title>
+      </PageHead>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -171,7 +175,7 @@ const CreatePersonData = () => {
         </Box>
         <BackLink />
       </Container>
-    </div>
+    </>
   );
 };
 

@@ -43,7 +43,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     // 認証トークンを取得
     const token = localStorage.getItem("auth_token");
-    console.log("token: ", token);
     if (token) {
       apiClient.defaults.headers["Authorization"] = `Bearer ${token}`;
 
@@ -55,7 +54,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         })
         .catch(() => {
           alert(
-            "システムとの通信が切断されました。\nログインからやり直してください。",
+            "システムとの通信が切断されました。\nログインからやり直してください。"
           );
 
           // tokenがある場合は、ブラウザからtokenを削除してトップページへ

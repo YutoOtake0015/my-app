@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { MenuItem, Select } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
+import PageHead from "../../components/PageHead";
 
 type sexType = "male" | "female";
 
@@ -79,6 +80,9 @@ export default function SignUp() {
 
   return (
     <>
+      <PageHead>
+        <title>アカウント登録</title>
+      </PageHead>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box

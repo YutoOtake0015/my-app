@@ -49,14 +49,16 @@ const Navbar = () => {
             }}
           >
             <Box>
-              <Typography component="h1">
-                <Link
-                  style={{ color: "white", textDecoration: "none" }}
-                  href="/"
-                >
-                  トップ
-                </Link>
-              </Typography>
+              {user && (
+                <Typography component="h1">
+                  <Link
+                    style={{ color: "white", textDecoration: "none" }}
+                    href="/"
+                  >
+                    あなたの余命
+                  </Link>
+                </Typography>
+              )}
             </Box>
             <List
               component="nav"
