@@ -13,11 +13,13 @@ import apiClient from "../lib/apiClient";
 import { useRouter } from "next/router";
 import BackLink from "../../components/BackLink";
 import PageHead from "../../components/PageHead";
+import { useRecoilValue } from "recoil";
+import userAtom from "../../recoil/atom/userAtoms";
 
 const MyPage = () => {
   const router = useRouter();
   const { signout } = useAuth();
-  const { user } = useAuth();
+  const user = useRecoilValue(userAtom);
 
   // アカウント情報
   const [email, setEmail] = useState<string>("");

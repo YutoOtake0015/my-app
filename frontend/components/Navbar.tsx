@@ -12,6 +12,8 @@ import {
 import React from "react";
 import { useAuth } from "../src/context/auth";
 import { useRouter } from "next/router";
+import { useRecoilValue } from "recoil";
+import userAtom from "../recoil/atom/userAtoms";
 
 type navType = {
   text: string;
@@ -24,7 +26,8 @@ const navLinks: Array<navType> = [
 ];
 
 const Navbar = () => {
-  const { signout, user } = useAuth();
+  const { signout } = useAuth();
+  const user = useRecoilValue(userAtom);
 
   const router = useRouter();
 

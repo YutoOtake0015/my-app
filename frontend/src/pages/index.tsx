@@ -11,11 +11,12 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
-import { useAuth } from "../context/auth";
 import RemainingLife from "../../components/RemainingLife";
 import { format, differenceInYears } from "date-fns";
 import HistoryToggleOffIcon from "@mui/icons-material/HistoryToggleOff";
 import PageHead from "../../components/PageHead";
+import { useRecoilValue } from "recoil";
+import userAtom from "../../recoil/atom/userAtoms";
 
 type sexType = "male" | "female";
 
@@ -40,7 +41,7 @@ type personType = {
 } | null;
 
 export default function Home() {
-  const { user } = useAuth();
+  const user = useRecoilValue(userAtom);
 
   const [person, setPerson] = useState<personType>(null);
   const [selectBirthDate, setSelectBirthDate] = useState<Date | null>(null);

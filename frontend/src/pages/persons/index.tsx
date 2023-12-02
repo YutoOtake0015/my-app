@@ -11,8 +11,9 @@ import apiClient from "../../lib/apiClient";
 import RemainingLife from "../../../components/RemainingLife";
 import { format } from "date-fns";
 import BackLink from "../../../components/BackLink";
-import { useAuth } from "../../context/auth";
 import PageHead from "../../../components/PageHead";
+import { useRecoilValue } from "recoil";
+import userAtom from "../../../recoil/atom/userAtoms";
 
 type personData = {
   id: number;
@@ -25,7 +26,7 @@ type personData = {
 
 const Persons = () => {
   const [persons, setPersons] = useState<personData[]>();
-  const { user } = useAuth();
+  const user = useRecoilValue(userAtom);
 
   useEffect(() => {
     const setPersonData = async () => {

@@ -13,10 +13,10 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
-import nookies from "nookies";
 import BackLink from "../../../components/BackLink";
-import { useAuth } from "../../context/auth";
 import PageHead from "../../../components/PageHead";
+import { useRecoilValue } from "recoil";
+import userAtom from "../../../recoil/atom/userAtoms";
 
 type sexType = "male" | "female";
 
@@ -29,7 +29,7 @@ export const getServerSideProps = async ({ req, params }) => {
   const token = req.headers.cookie
     ? req.headers.cookie.replace(
         /(?:(?:^|.*;\s*)auth_token\s*=\s*([^;]*).*$)|^.*$/,
-        "$1"
+        "$1",
       )
     : null;
 
@@ -59,7 +59,7 @@ export const getServerSideProps = async ({ req, params }) => {
 
 const PersonPage = ({ person }) => {
   const router = useRouter();
-  const { user } = useAuth();
+  const user = useRecoilValue(userAtom);
 
   // ユーザ情報
   const [personName, setPersonName] = useState<string>("");

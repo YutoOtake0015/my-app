@@ -13,15 +13,16 @@ import { DatePicker } from "@mui/x-date-pickers";
 import React, { useState } from "react";
 import apiClient from "../../lib/apiClient";
 import { useRouter } from "next/router";
-import { useAuth } from "../../context/auth";
 import BackLink from "../../../components/BackLink";
 import PageHead from "../../../components/PageHead";
+import { useRecoilValue } from "recoil";
+import userAtom from "../../../recoil/atom/userAtoms";
 
 type sexType = "male" | "female";
 
 const CreatePersonData = () => {
   const router = useRouter();
-  const { user } = useAuth();
+  const user = useRecoilValue(userAtom);
 
   // ユーザ情報
   const [personName, setPersonName] = useState<string>();

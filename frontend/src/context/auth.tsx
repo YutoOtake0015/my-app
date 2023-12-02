@@ -4,16 +4,10 @@ import nookies from "nookies";
 import { useRouter } from "next/router";
 import { Box } from "@mui/material";
 import { ClockLoader } from "react-spinners";
+import { useSetRecoilState } from "recoil";
+import userAtom from "../../recoil/atom/userAtoms";
 
 interface AuthContextType {
-  user: null | {
-    id: number;
-    username: string;
-    email: string;
-
-    sex: string;
-    birthDate: string;
-  };
   signin: (token: string) => void;
   signout: () => void;
 }
@@ -23,7 +17,6 @@ interface AuthProviderProps {
 }
 
 const AuthContext = React.createContext<AuthContextType>({
-  user: null,
   signin: () => {},
   signout: () => {},
 });
@@ -43,14 +36,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(true);
-
-  const [user, setUser] = useState<null | {
-    id: number;
-    email: string;
-    username: string;
-    sex: string;
-    birthDate: string;
-  }>(null);
+  const setUser = useSetRecoilState(userAtom);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -103,7 +89,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const value = {
-    user,
     signin,
     signout,
   };
