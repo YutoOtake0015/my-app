@@ -17,6 +17,7 @@ import BackLink from "../../../components/BackLink";
 import PageHead from "../../../components/PageHead";
 import { useRecoilValue } from "recoil";
 import userAtom from "../../../recoil/atom/userAtoms";
+import ProtectRoute from "../../../components/ProtectRoute";
 
 type sexType = "male" | "female";
 
@@ -71,87 +72,89 @@ const CreatePersonData = () => {
 
   return (
     <>
-      <PageHead>
-        <title>余命登録</title>
-      </PageHead>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Typography component="h1" variant="h5">
-            余命を登録しましょう
-          </Typography>
-          {validationErrors.length > 0 && (
-            <Box style={{ color: "red" }}>
-              <ul>
-                {validationErrors.map((error, index) => (
-                  <li key={index}>{error}</li>
-                ))}
-              </ul>
-            </Box>
-          )}
+      <ProtectRoute user={user}>
+        <PageHead>
+          <title>余命登録</title>
+        </PageHead>
+        <Container component="main" maxWidth="xs">
+          <CssBaseline />
           <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-            sx={{ mt: 3 }}
+            sx={{
+              marginTop: 8,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
           >
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  autoComplete="given-name"
-                  name="name"
-                  required
-                  fullWidth
-                  id="name"
-                  label="名前"
-                  autoFocus
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setPersonName(e.target.value)
-                  }
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={8}>
-                <DatePicker
-                  label="生年月日"
-                  onChange={(e: Date) => setBirthDate(e as Date)}
-                  value={birthDate}
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Select
-                  value={sex}
-                  required
-                  label="性別"
-                  fullWidth
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setSex(e.target.value as sexType)
-                  }
-                >
-                  <MenuItem value={"male"}>男</MenuItem>
-                  <MenuItem value={"female"}>女</MenuItem>
-                </Select>
-              </Grid>
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+            <Typography component="h1" variant="h5">
+              余命を登録しましょう
+            </Typography>
+            {validationErrors.length > 0 && (
+              <Box style={{ color: "red" }}>
+                <ul>
+                  {validationErrors.map((error, index) => (
+                    <li key={index}>{error}</li>
+                  ))}
+                </ul>
+              </Box>
+            )}
+            <Box
+              component="form"
+              noValidate
+              onSubmit={handleSubmit}
+              sx={{ mt: 3 }}
             >
-              登録
-            </Button>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    autoComplete="given-name"
+                    name="name"
+                    required
+                    fullWidth
+                    id="name"
+                    label="名前"
+                    autoFocus
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setPersonName(e.target.value)
+                    }
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={8}>
+                  <DatePicker
+                    label="生年月日"
+                    onChange={(e: Date) => setBirthDate(e as Date)}
+                    value={birthDate}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <Select
+                    value={sex}
+                    required
+                    label="性別"
+                    fullWidth
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setSex(e.target.value as sexType)
+                    }
+                  >
+                    <MenuItem value={"male"}>男</MenuItem>
+                    <MenuItem value={"female"}>女</MenuItem>
+                  </Select>
+                </Grid>
+              </Grid>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                登録
+              </Button>
+            </Box>
           </Box>
-        </Box>
-        <BackLink />
-      </Container>
+          <BackLink />
+        </Container>
+      </ProtectRoute>
     </>
   );
 };

@@ -14,6 +14,8 @@ import BackLink from "../../../components/BackLink";
 import PageHead from "../../../components/PageHead";
 import { useRecoilValue } from "recoil";
 import userAtom from "../../../recoil/atom/userAtoms";
+import { useRouter } from "next/router";
+import ProtectRoute from "../../../components/ProtectRoute";
 
 type personData = {
   id: number;
@@ -27,6 +29,8 @@ type personData = {
 const Persons = () => {
   const [persons, setPersons] = useState<personData[]>();
   const user = useRecoilValue(userAtom);
+
+  const router = useRouter();
 
   useEffect(() => {
     const setPersonData = async () => {
@@ -105,46 +109,48 @@ const Persons = () => {
 
   return (
     <>
-      <PageHead>
-        <title>余命一覧</title>
-      </PageHead>
-      {persons && (
-        <Container>
-          <Button
-            href="/persons/create"
-            variant="contained"
-            sx={{ marginTop: "1rem" }}
-          >
-            新規登録
-          </Button>
-          <Box>
-            <DataGrid
-              columns={cols}
-              rows={persons}
-              density="compact"
-              autoHeight
-              initialState={{
-                pagination: {
-                  paginationModel: { pageSize: 10, page: 0 },
-                },
-              }}
-              sx={{
-                "& .user-row": {
-                  background: "#00FFFF !important",
-                },
-              }}
-              // 特定の条件でclassを返す
-              getRowClassName={(params: GridRowParams) => {
-                if (params.row.isAccountUser) {
-                  return "user-row";
-                }
-                return "";
-              }}
-            />
-          </Box>
-          <BackLink />
-        </Container>
-      )}
+      <ProtectRoute user={user}>
+        <PageHead>
+          <title>余命一覧</title>
+        </PageHead>
+        {persons && (
+          <Container>
+            <Button
+              href="/persons/create"
+              variant="contained"
+              sx={{ marginTop: "1rem" }}
+            >
+              新規登録
+            </Button>
+            <Box>
+              <DataGrid
+                columns={cols}
+                rows={persons}
+                density="compact"
+                autoHeight
+                initialState={{
+                  pagination: {
+                    paginationModel: { pageSize: 10, page: 0 },
+                  },
+                }}
+                sx={{
+                  "& .user-row": {
+                    background: "#00FFFF !important",
+                  },
+                }}
+                // 特定の条件でclassを返す
+                getRowClassName={(params: GridRowParams) => {
+                  if (params.row.isAccountUser) {
+                    return "user-row";
+                  }
+                  return "";
+                }}
+              />
+            </Box>
+            <BackLink />
+          </Container>
+        )}
+      </ProtectRoute>
     </>
   );
 };

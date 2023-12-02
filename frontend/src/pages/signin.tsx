@@ -8,8 +8,8 @@ import Container from "@mui/material/Container";
 import apiClient from "../lib/apiClient";
 import { useRouter } from "next/router";
 import { useAuth } from "../context/auth";
-import BackLink from "../../components/BackLink";
 import PageHead from "../../components/PageHead";
+import HomeLink from "../../components/HomeLink";
 
 export default function SignIn() {
   // アカウント情報
@@ -134,7 +134,7 @@ export default function SignIn() {
             </Button>
           </Box>
         </Box>
-        <BackLink />
+        <HomeLink />
       </Container>
     </>
   );

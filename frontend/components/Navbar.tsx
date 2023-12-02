@@ -32,8 +32,8 @@ const Navbar = () => {
   const router = useRouter();
 
   const handleSignout = () => {
+    router.push("/signin");
     signout();
-    router.push("/");
   };
 
   return (
