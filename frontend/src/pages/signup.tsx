@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import apiClient from "../lib/apiClient";
-import BackLink from "../../components/BackLink";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -12,6 +11,7 @@ import Container from "@mui/material/Container";
 import { MenuItem, Select } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import PageHead from "../../components/PageHead";
+import HomeLink from "../../components/HomeLink";
 
 type sexType = "male" | "female";
 
@@ -194,7 +194,7 @@ export default function SignUp() {
             </Button>
           </Box>
         </Box>
-        <BackLink />
+        <HomeLink />
       </Container>
     </>
   );

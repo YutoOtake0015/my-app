@@ -17,6 +17,7 @@ import BackLink from "../../../components/BackLink";
 import PageHead from "../../../components/PageHead";
 import { useRecoilValue } from "recoil";
 import userAtom from "../../../recoil/atom/userAtoms";
+import { useAuth } from "../../context/auth";
 
 type sexType = "male" | "female";
 
@@ -60,6 +61,7 @@ export const getServerSideProps = async ({ req, params }) => {
 const PersonPage = ({ person }) => {
   const router = useRouter();
   const user = useRecoilValue(userAtom);
+  const { signout } = useAuth();
 
   // ユーザ情報
   const [personName, setPersonName] = useState<string>("");
@@ -132,111 +134,122 @@ const PersonPage = ({ person }) => {
       setBirthDate(new Date(person.birthDate));
     } else {
       // 人物情報が利用できない場合の処理
-      alert("情報の編集に失敗しました");
-      router.push("/persons");
+      signout();
+      router.push("/signin");
     }
   }, []);
 
+  const redirectToLogin = () => {
+    signout();
+    router.push("/signin");
+  };
+
   return (
     <>
-      <PageHead>
-        <title>情報編集</title>
-      </PageHead>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Typography component="h1" variant="h5">
-            情報編集
-          </Typography>
-          {validationErrors.length > 0 && (
-            <Box style={{ color: "red" }}>
-              <ul>
-                {validationErrors.map((error, index) => (
-                  <li key={index}>{error}</li>
-                ))}
-              </ul>
-            </Box>
-          )}
-          <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-            sx={{ mt: 3 }}
-          >
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  autoComplete="given-name"
-                  name="name"
-                  required
-                  fullWidth
-                  id="name"
-                  label="名前"
-                  autoFocus
-                  value={personName}
-                  InputLabelProps={{
-                    shrink: !!personName,
-                  }}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setPersonName(e.target.value)
-                  }
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={8}>
-                <DatePicker
-                  label="生年月日"
-                  value={birthDate}
-                  closeOnSelect={false}
-                  onChange={(e: Date) => setBirthDate(e as Date)}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <Select
-                  value={sex}
-                  required
-                  label="性別"
-                  fullWidth
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setSex(e.target.value as sexType)
-                  }
-                >
-                  <MenuItem value={"male"}>男</MenuItem>
-                  <MenuItem value={"female"}>女</MenuItem>
-                </Select>
-              </Grid>
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+      {user && person && user.id === person.userId ? (
+        <>
+          <PageHead>
+            <title>情報編集</title>
+          </PageHead>
+          <Container component="main" maxWidth="xs">
+            <CssBaseline />
+            <Box
+              sx={{
+                marginTop: 8,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
             >
-              編集
-            </Button>
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <BackLink />
-          {!person.isAccountUser && (
-            <Button onClick={handleDeletePerson}>削除</Button>
-          )}
-        </Box>
-      </Container>
+              <Typography component="h1" variant="h5">
+                情報編集
+              </Typography>
+              {validationErrors.length > 0 && (
+                <Box style={{ color: "red" }}>
+                  <ul>
+                    {validationErrors.map((error, index) => (
+                      <li key={index}>{error}</li>
+                    ))}
+                  </ul>
+                </Box>
+              )}
+              <Box
+                component="form"
+                noValidate
+                onSubmit={handleSubmit}
+                sx={{ mt: 3 }}
+              >
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TextField
+                      autoComplete="given-name"
+                      name="name"
+                      required
+                      fullWidth
+                      id="name"
+                      label="名前"
+                      autoFocus
+                      value={personName}
+                      InputLabelProps={{
+                        shrink: !!personName,
+                      }}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setPersonName(e.target.value)
+                      }
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={8}>
+                    <DatePicker
+                      label="生年月日"
+                      value={birthDate}
+                      closeOnSelect={false}
+                      onChange={(e: Date) => setBirthDate(e as Date)}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={4}>
+                    <Select
+                      value={sex}
+                      required
+                      label="性別"
+                      fullWidth
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setSex(e.target.value as sexType)
+                      }
+                    >
+                      <MenuItem value={"male"}>男</MenuItem>
+                      <MenuItem value={"female"}>女</MenuItem>
+                    </Select>
+                  </Grid>
+                </Grid>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  編集
+                </Button>
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <BackLink />
+              {!person.isAccountUser && (
+                <Button onClick={handleDeletePerson}>削除</Button>
+              )}
+            </Box>
+          </Container>
+        </>
+      ) : (
+        redirectToLogin()
+      )}
     </>
   );
 };
