@@ -4,7 +4,7 @@ import {
   GridRenderCellParams,
   GridRowParams,
 } from "@mui/x-data-grid";
-import { Button, Container } from "@mui/material";
+import { Box, Button, Container } from "@mui/material";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import apiClient from "../../lib/apiClient";
@@ -45,7 +45,7 @@ const Persons = () => {
   const formatBirthDate = (params: GridRenderCellParams<any>) => {
     const formattedDate = format(
       new Date(params.row.birthDate),
-      "yyyy年MM月dd日"
+      "yyyy年MM月dd日",
     );
     return formattedDate;
   };
@@ -107,16 +107,16 @@ const Persons = () => {
       <PageHead>
         <title>余命一覧</title>
       </PageHead>
-      <Container>
-        <Button
-          href="/persons/create"
-          variant="contained"
-          sx={{ marginTop: "1rem" }}
-        >
-          新規登録
-        </Button>
-        {persons ? (
-          <div>
+      {persons && (
+        <Container>
+          <Button
+            href="/persons/create"
+            variant="contained"
+            sx={{ marginTop: "1rem" }}
+          >
+            新規登録
+          </Button>
+          <Box>
             <DataGrid
               columns={cols}
               rows={persons}
@@ -140,12 +140,10 @@ const Persons = () => {
                 return "";
               }}
             />
-          </div>
-        ) : (
-          <h1>読み込み中...</h1>
-        )}
-        <BackLink />
-      </Container>
+          </Box>
+          <BackLink />
+        </Container>
+      )}
     </>
   );
 };

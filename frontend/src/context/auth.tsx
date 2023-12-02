@@ -2,12 +2,15 @@ import React, { ReactNode, useContext, useEffect, useState } from "react";
 import apiClient from "../lib/apiClient";
 import nookies from "nookies";
 import { useRouter } from "next/router";
+import { Box } from "@mui/material";
+import { ClockLoader } from "react-spinners";
 
 interface AuthContextType {
   user: null | {
     id: number;
     username: string;
     email: string;
+
     sex: string;
     birthDate: string;
   };
@@ -25,12 +28,21 @@ const AuthContext = React.createContext<AuthContextType>({
   signout: () => {},
 });
 
+const clockStyle = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  height: "100vh",
+};
+
 export const useAuth = () => {
   return useContext(AuthContext);
 };
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const router = useRouter();
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const [user, setUser] = useState<null | {
     id: number;
@@ -41,26 +53,28 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }>(null);
 
   useEffect(() => {
-    // 認証トークンを取得
-    const token = localStorage.getItem("auth_token");
-    if (token) {
-      apiClient.defaults.headers["Authorization"] = `Bearer ${token}`;
+    const fetchData = async () => {
+      // 認証tokenを取得
+      const token = localStorage.getItem("auth_token");
+      if (token) {
+        apiClient.defaults.headers["Authorization"] = `Bearer ${token}`;
 
-      // トークンに応じたユーザーをセット
-      apiClient
-        .get("/users/find")
-        .then((res) => {
+        // tokenに応じたuserをセット
+        try {
+          const res = await apiClient.get("/users/find");
           setUser(res.data.user);
-        })
-        .catch(() => {
+        } catch (error) {
+          // tokenに応じたuserを取得できない場合、認証情報に異常がある判断してサインアウトする
           alert(
-            "システムとの通信が切断されました。\nログインからやり直してください。"
+            "システムとの通信が切断されました。\nログインからやり直してください。",
           );
-
-          // tokenがある場合は、ブラウザからtokenを削除してトップページへ
           token ? signout() : router.push("/");
-        });
-    }
+        }
+      }
+      setIsLoading(false);
+    };
+
+    fetchData();
   }, []);
 
   const signin = async (token: string) => {
@@ -93,6 +107,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     signin,
     signout,
   };
+
+  if (isLoading) {
+    return (
+      <Box sx={{ display: "flex", ...clockStyle }}>
+        <ClockLoader size={150} color={"#000000"} speedMultiplier={3} />
+      </Box>
+    );
+  }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
