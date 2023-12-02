@@ -8,12 +8,10 @@ import { AuthProvider } from "../context/auth";
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <AuthProvider>
-      <div>
-        <Navbar />
-        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ja}>
-          <Component {...pageProps} />
-        </LocalizationProvider>
-      </div>
+      <Navbar />
+      <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ja}>
+        <Component {...pageProps} />
+      </LocalizationProvider>
     </AuthProvider>
   );
 }
