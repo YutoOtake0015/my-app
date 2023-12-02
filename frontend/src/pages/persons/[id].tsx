@@ -125,13 +125,6 @@ const PersonPage = ({ person }) => {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    // Enterキー押下時、送信処理を抑制する
-    if (e.key === "Enter") {
-      e.preventDefault();
-    }
-  };
-
   useEffect(() => {
     if (person) {
       setPersonName(person.personName);
@@ -194,20 +187,10 @@ const PersonPage = ({ person }) => {
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setPersonName(e.target.value)
                   }
-                  onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                    handleKeyDown(e)
-                  }
                 />
               </Grid>
 
-              <Grid
-                item
-                xs={12}
-                sm={8}
-                onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                  handleKeyDown(e)
-                }
-              >
+              <Grid item xs={12} sm={8}>
                 <DatePicker
                   label="生年月日"
                   value={birthDate}
@@ -216,14 +199,7 @@ const PersonPage = ({ person }) => {
                 />
               </Grid>
 
-              <Grid
-                item
-                xs={12}
-                sm={4}
-                onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                  handleKeyDown(e)
-                }
-              >
+              <Grid item xs={12} sm={4}>
                 <Select
                   value={sex}
                   required

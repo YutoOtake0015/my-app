@@ -71,13 +71,6 @@ export default function SignUp() {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    // Enterキー押下時、送信処理を抑制する
-    if (e.key === "Enter") {
-      e.preventDefault();
-    }
-  };
-
   return (
     <>
       <PageHead>
@@ -125,9 +118,6 @@ export default function SignUp() {
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setUserName(e.target.value)
                   }
-                  onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                    handleKeyDown(e)
-                  }
                 />
               </Grid>
 
@@ -141,9 +131,6 @@ export default function SignUp() {
                   autoComplete="email"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setEmail(e.target.value)
-                  }
-                  onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                    handleKeyDown(e)
                   }
                   inputProps={{
                     onKeyPress: (e) => {
@@ -166,9 +153,6 @@ export default function SignUp() {
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setPassword(e.target.value)
                   }
-                  onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                    handleKeyDown(e)
-                  }
                   inputProps={{
                     onKeyPress: (e) => {
                       if (e.key === " ") {
@@ -178,28 +162,14 @@ export default function SignUp() {
                   }}
                 />
               </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={8}
-                onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                  handleKeyDown(e)
-                }
-              >
+              <Grid item xs={12} sm={8}>
                 <DatePicker
                   label="生年月日"
                   onChange={(e: Date) => setBirthDate(e as Date)}
                   value={birthDate}
                 />
               </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={4}
-                onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                  handleKeyDown(e)
-                }
-              >
+              <Grid item xs={12} sm={4}>
                 <Select
                   value={sex}
                   required
