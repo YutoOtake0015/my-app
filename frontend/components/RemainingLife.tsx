@@ -101,19 +101,27 @@ const RemainingLife = ({ person }) => {
   };
 
   return (
-    <>
-      <Box sx={{ display: "flex", textAlign: "center" }}>
-        <span style={timeStyle}>{formatNumber(year)}年</span>
-        <span style={timeStyle}>
-          {formatNumber(month)}
-          ヵ月
-        </span>
-        <span style={timeStyle}>{formatNumber(day)}日</span>
-        <span style={timeStyle}>{formatNumber(hour)}時間</span>
-        <span style={timeStyle}>{formatNumber(minute)}分</span>
-        <span style={timeStyle}>{formatNumber(second)}秒</span>
+    <Box sx={{ display: "flex", textAlign: "center" }}>
+      <Box component="span" style={timeStyle}>
+        {formatNumber(year)}年
       </Box>
-    </>
+      <Box component="span" style={timeStyle}>
+        {formatNumber(month)}
+        ヵ月
+      </Box>
+      <Box component="span" style={timeStyle}>
+        {formatNumber(day)}日
+      </Box>
+      <Box component="span" style={timeStyle}>
+        {formatNumber(hour)}時間
+      </Box>
+      <Box component="span" style={timeStyle}>
+        {formatNumber(minute)}分
+      </Box>
+      <Box component="span" style={timeStyle}>
+        {formatNumber(second)}秒
+      </Box>
+    </Box>
   );
 };
 

@@ -13,11 +13,13 @@ import apiClient from "../lib/apiClient";
 import { useRouter } from "next/router";
 import BackLink from "../../components/BackLink";
 import PageHead from "../../components/PageHead";
+import { useRecoilValue } from "recoil";
+import userAtom from "../../recoil/atom/userAtoms";
 
 const MyPage = () => {
   const router = useRouter();
   const { signout } = useAuth();
-  const { user } = useAuth();
+  const user = useRecoilValue(userAtom);
 
   // アカウント情報
   const [email, setEmail] = useState<string>("");
@@ -101,13 +103,6 @@ const MyPage = () => {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    // Enterキー押下時、送信処理を抑制する
-    if (e.key === "Enter") {
-      e.preventDefault();
-    }
-  };
-
   useEffect(() => {
     if (user) {
       setEmail(user.email);
@@ -161,9 +156,6 @@ const MyPage = () => {
                     shrink: !!email,
                   }}
                   onChange={(e) => setEmail(e.target.value)}
-                  onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                    handleKeyDown(e)
-                  }
                 />
               </Grid>
               <Grid item xs={12}>
@@ -177,9 +169,6 @@ const MyPage = () => {
                   autoComplete="new-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                    handleKeyDown(e)
-                  }
                 />
               </Grid>
             </Grid>

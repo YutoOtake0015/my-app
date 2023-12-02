@@ -11,11 +11,12 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers";
-import { useAuth } from "../context/auth";
 import RemainingLife from "../../components/RemainingLife";
 import { format, differenceInYears } from "date-fns";
 import HistoryToggleOffIcon from "@mui/icons-material/HistoryToggleOff";
 import PageHead from "../../components/PageHead";
+import { useRecoilValue } from "recoil";
+import userAtom from "../../recoil/atom/userAtoms";
 
 type sexType = "male" | "female";
 
@@ -40,7 +41,7 @@ type personType = {
 } | null;
 
 export default function Home() {
-  const { user } = useAuth();
+  const user = useRecoilValue(userAtom);
 
   const [person, setPerson] = useState<personType>(null);
   const [selectBirthDate, setSelectBirthDate] = useState<Date | null>(null);
@@ -96,7 +97,7 @@ export default function Home() {
         <title>あなたの余命</title>
       </PageHead>
       <Container
-        style={{
+        sx={{
           display: "flex",
           alignItems: "center",
           flexDirection: "column",
@@ -119,10 +120,10 @@ export default function Home() {
             情報を設定
           </Button>
         )}
-        <div style={{ marginTop: "20px" }}>
+        <Box sx={{ marginTop: "20px" }}>
           {person && (
-            <div
-              style={{
+            <Box
+              sx={{
                 display: "flex",
                 alignItems: "center",
                 flexDirection: "column",
@@ -131,21 +132,21 @@ export default function Home() {
                 borderRadius: "10px",
               }}
             >
-              <div style={{ marginBottom: "20px", textAlign: "center" }}>
+              <Box sx={{ marginBottom: "20px", textAlign: "center" }}>
                 <Typography variant="subtitle1">
-                  <span style={{ fontSize: "2rem" }}>
+                  <Box component="span" sx={{ fontSize: "2rem" }}>
                     {format(person.birthDate, "yyyy年MM月dd日")}
-                  </span>
+                  </Box>
                   生まれ
                 </Typography>
                 <Typography variant="h5">
-                  <span style={{ fontSize: "2rem" }}>
+                  <Box component="span" sx={{ fontSize: "2rem" }}>
                     {calculateAge(person.birthDate)}歳
-                  </span>
+                  </Box>
                   の{person.sex === "male" ? "男性" : "女性"}
                 </Typography>
-              </div>
-            </div>
+              </Box>
+            </Box>
           )}
           {person && (
             <Box
@@ -176,13 +177,13 @@ export default function Home() {
               </Typography>
             </Box>
           )}
-        </div>
+        </Box>
         {showModal && (
           <>
             <Modal open={showModal} onClose={() => setShowModal(false)}>
               <CenteredModalContainer>
-                <div style={modalStyle}>
-                  <div style={{ marginBottom: "10px" }}>
+                <Box sx={modalStyle}>
+                  <Box sx={{ marginBottom: "10px" }}>
                     <Typography variant="h6" sx={{ marginBottom: "5px" }}>
                       生年月日
                     </Typography>
@@ -190,8 +191,8 @@ export default function Home() {
                       value={selectBirthDate}
                       onChange={handleChangeBirth}
                     />
-                  </div>
-                  <div style={{ marginBottom: "10px" }}>
+                  </Box>
+                  <Box sx={{ marginBottom: "10px" }}>
                     <Typography variant="h6" sx={{ marginBottom: "5px" }}>
                       性別
                     </Typography>
@@ -199,7 +200,7 @@ export default function Home() {
                       <MenuItem value={"male"}>男</MenuItem>
                       <MenuItem value={"female"}>女</MenuItem>
                     </Select>
-                  </div>
+                  </Box>
                   <Button
                     variant="contained"
                     onClick={handleSetting}
@@ -207,7 +208,7 @@ export default function Home() {
                   >
                     設定
                   </Button>
-                </div>
+                </Box>
               </CenteredModalContainer>
             </Modal>
           </>

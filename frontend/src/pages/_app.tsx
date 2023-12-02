@@ -4,16 +4,17 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { ja } from "date-fns/locale";
 import Navbar from "../../components/Navbar";
 import { AuthProvider } from "../context/auth";
+import { RecoilRoot } from "recoil";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <AuthProvider>
-      <div>
+    <RecoilRoot>
+      <AuthProvider>
         <Navbar />
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ja}>
           <Component {...pageProps} />
         </LocalizationProvider>
-      </div>
-    </AuthProvider>
+      </AuthProvider>
+    </RecoilRoot>
   );
 }

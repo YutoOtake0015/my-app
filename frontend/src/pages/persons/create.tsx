@@ -13,15 +13,16 @@ import { DatePicker } from "@mui/x-date-pickers";
 import React, { useState } from "react";
 import apiClient from "../../lib/apiClient";
 import { useRouter } from "next/router";
-import { useAuth } from "../../context/auth";
 import BackLink from "../../../components/BackLink";
 import PageHead from "../../../components/PageHead";
+import { useRecoilValue } from "recoil";
+import userAtom from "../../../recoil/atom/userAtoms";
 
 type sexType = "male" | "female";
 
 const CreatePersonData = () => {
   const router = useRouter();
-  const { user } = useAuth();
+  const user = useRecoilValue(userAtom);
 
   // ユーザ情報
   const [personName, setPersonName] = useState<string>();
@@ -65,13 +66,6 @@ const CreatePersonData = () => {
         break;
       default:
         alert("予期せぬエラーが発生しました。\nもう一度やり直してください。");
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    // Enterキー押下時、送信処理を抑制する
-    if (e.key === "Enter") {
-      e.preventDefault();
     }
   };
 
@@ -121,34 +115,17 @@ const CreatePersonData = () => {
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setPersonName(e.target.value)
                   }
-                  onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                    handleKeyDown(e)
-                  }
                 />
               </Grid>
 
-              <Grid
-                item
-                xs={12}
-                sm={8}
-                onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                  handleKeyDown(e)
-                }
-              >
+              <Grid item xs={12} sm={8}>
                 <DatePicker
                   label="生年月日"
                   onChange={(e: Date) => setBirthDate(e as Date)}
                   value={birthDate}
                 />
               </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={4}
-                onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                  handleKeyDown(e)
-                }
-              >
+              <Grid item xs={12} sm={4}>
                 <Select
                   value={sex}
                   required
