@@ -125,6 +125,7 @@ const CreatePersonData = () => {
                     label="生年月日"
                     onChange={(e: Date) => setBirthDate(e as Date)}
                     value={birthDate}
+                    maxDate={new Date()}
                   />
                 </Grid>
                 <Grid item xs={12} sm={4}>
