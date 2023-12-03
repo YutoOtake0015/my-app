@@ -124,6 +124,8 @@ const CreatePersonData = () => {
                     onChange={(e: Date) => setBirthDate(e as Date)}
                     value={birthDate}
                     maxDate={new Date()}
+                    openTo="year"
+                    views={["year", "month", "day"]}
                   />
                 </Grid>
                 <Grid item xs={12} sm={4}>

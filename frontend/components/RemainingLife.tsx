@@ -107,8 +107,6 @@ const RemainingLife = ({ person }) => {
     return value.toString().padStart(2, "0");
   };
 
-  console.log("isExceeded: ", isExceeded);
-
   return (
     <>
       {isExceeded ? (

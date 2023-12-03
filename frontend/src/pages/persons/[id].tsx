@@ -204,6 +204,8 @@ const PersonPage = ({ person }) => {
                       closeOnSelect={false}
                       onChange={(e: Date) => setBirthDate(e as Date)}
                       maxDate={new Date()}
+                      openTo="year"
+                      views={["year", "month", "day"]}
                     />
                   </Grid>
 
