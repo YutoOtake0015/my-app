@@ -194,6 +194,7 @@ export default function Home() {
                     <DatePicker
                       value={selectBirthDate}
                       onChange={handleChangeBirth}
+                      maxDate={new Date()}
                     />
                   </Box>
                   <Box sx={{ marginBottom: "10px" }}>
