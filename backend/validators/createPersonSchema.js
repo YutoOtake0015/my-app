@@ -7,9 +7,11 @@ const createPersonSchema = Joi.object({
     "string.max": "名前は15文字以内で入力してください",
   }),
 
-  birthDate: Joi.date().required().messages({
+  birthDate: Joi.date().min("1900-01-01").max(new Date()).required().messages({
     "any.required": "生年月日を指定してください",
     "date.base": "有効な日付を指定してください",
+    "date.min": "生年月日は 1900/01/01〜本日 の範囲で選択してください",
+    "date.max": "生年月日は 1900/01/01〜本日 の範囲で選択してください",
   }),
 
   sex: Joi.string().trim().required().messages({
