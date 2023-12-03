@@ -205,6 +205,7 @@ const PersonPage = ({ person }) => {
                       value={birthDate}
                       closeOnSelect={false}
                       onChange={(e: Date) => setBirthDate(e as Date)}
+                      maxDate={new Date()}
                     />
                   </Grid>
 
