@@ -5,6 +5,7 @@ import { ja } from "date-fns/locale";
 import Navbar from "../../components/Navbar";
 import { AuthProvider } from "../context/auth";
 import { RecoilRoot } from "recoil";
+import { CssBaseline } from "@mui/material";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -12,6 +13,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <AuthProvider>
         <Navbar />
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ja}>
+          <CssBaseline />
           <Component {...pageProps} />
         </LocalizationProvider>
       </AuthProvider>

@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   Container,
-  CssBaseline,
   Grid,
   MenuItem,
   Select,
@@ -152,7 +151,6 @@ const PersonPage = ({ person }) => {
             <title>情報編集</title>
           </PageHead>
           <Container component="main" maxWidth="xs">
-            <CssBaseline />
             <Box
               sx={{
                 marginTop: 8,
