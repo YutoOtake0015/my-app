@@ -16,6 +16,7 @@ const RemainingLife = ({ person }) => {
   const [hour, setHour] = useState<number>();
   const [minute, setMinute] = useState<number>();
   const [second, setSecond] = useState<number>();
+  const [isExceeded, setIsExceeded] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,6 +48,12 @@ const RemainingLife = ({ person }) => {
   };
 
   const setTime: (totalSeconds: number) => void = (totalSeconds) => {
+    // 年齢が寿命を超過していれば終了
+    if (totalSeconds < 0) {
+      setIsExceeded(true);
+      return;
+    }
+
     // 各単位の秒
     const secondsInMinute = 60;
     const secondsInHour = 60 * secondsInMinute;
@@ -100,28 +107,36 @@ const RemainingLife = ({ person }) => {
     return value.toString().padStart(2, "0");
   };
 
+  console.log("isExceeded: ", isExceeded);
+
   return (
-    <Box sx={{ display: "flex", textAlign: "center" }}>
-      <Box component="span" style={timeStyle}>
-        {formatNumber(year)}年
-      </Box>
-      <Box component="span" style={timeStyle}>
-        {formatNumber(month)}
-        ヵ月
-      </Box>
-      <Box component="span" style={timeStyle}>
-        {formatNumber(day)}日
-      </Box>
-      <Box component="span" style={timeStyle}>
-        {formatNumber(hour)}時間
-      </Box>
-      <Box component="span" style={timeStyle}>
-        {formatNumber(minute)}分
-      </Box>
-      <Box component="span" style={timeStyle}>
-        {formatNumber(second)}秒
-      </Box>
-    </Box>
+    <>
+      {isExceeded ? (
+        <Box>無限の可能性が広がっています</Box>
+      ) : (
+        <Box sx={{ display: "flex", textAlign: "center" }}>
+          <Box component="span" style={timeStyle}>
+            {formatNumber(year)}年
+          </Box>
+          <Box component="span" style={timeStyle}>
+            {formatNumber(month)}
+            ヵ月
+          </Box>
+          <Box component="span" style={timeStyle}>
+            {formatNumber(day)}日
+          </Box>
+          <Box component="span" style={timeStyle}>
+            {formatNumber(hour)}時間
+          </Box>
+          <Box component="span" style={timeStyle}>
+            {formatNumber(minute)}分
+          </Box>
+          <Box component="span" style={timeStyle}>
+            {formatNumber(second)}秒
+          </Box>
+        </Box>
+      )}
+    </>
   );
 };
 
