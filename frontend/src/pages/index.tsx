@@ -51,14 +51,6 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [remainingLifeKey, setRemainingLifeKey] = useState<number>(0);
 
-  const handleChangeSex = (e: SelectChangeEvent<sexType>) => {
-    setSelectSex(e.target.value as sexType);
-  };
-
-  const handleChangeBirth = (e: Date | null) => {
-    setSelectBirthDate(e);
-  };
-
   const calculateAge = (birthDate: Date) => {
     const currentDate = new Date();
     return differenceInYears(currentDate, birthDate);
@@ -219,16 +211,22 @@ export default function Home() {
                     </Typography>
                     <DatePicker
                       value={selectBirthDate}
-                      onChange={handleChangeBirth}
+                      onChange={(e: Date) => setSelectBirthDate(e as Date)}
                       maxDate={new Date()}
-                      minDate={new Date("1900-01-01")}
+                      openTo="year"
+                      views={["year", "month", "day"]}
                     />
                   </Box>
                   <Box sx={{ marginBottom: "10px" }}>
                     <Typography variant="h6" sx={{ marginBottom: "5px" }}>
                       性別
                     </Typography>
-                    <Select value={selectSex} onChange={handleChangeSex}>
+                    <Select
+                      value={selectSex}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setSelectSex(e.target.value as sexType)
+                      }
+                    >
                       <MenuItem value={"male"}>男</MenuItem>
                       <MenuItem value={"female"}>女</MenuItem>
                     </Select>
