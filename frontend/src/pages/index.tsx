@@ -17,6 +17,7 @@ import HistoryToggleOffIcon from "@mui/icons-material/HistoryToggleOff";
 import PageHead from "../../components/PageHead";
 import { useRecoilValue } from "recoil";
 import userAtom from "../../recoil/atom/userAtoms";
+import { useRouter } from "next/router";
 
 type sexType = "male" | "female";
 
@@ -42,6 +43,7 @@ type personType = {
 
 export default function Home() {
   const user = useRecoilValue(userAtom);
+  const router = useRouter();
 
   const [person, setPerson] = useState<personType>(null);
   const [selectBirthDate, setSelectBirthDate] = useState<Date | null>(null);
@@ -68,11 +70,35 @@ export default function Home() {
         return alert("情報を設定してください");
       }
 
+      // バリデーション
+      const currentDate = new Date(new Date().toDateString());
+      const minBirthDate = new Date(new Date("1900-01-01").toDateString());
+
+      // 生年月日：形式確認
+      if (isNaN(selectBirthDate.getTime())) {
+        return alert("正しい生年月日を入力してください");
+      }
+
+      // 生年月日：範囲確認
+      const sanitizedBirthDate = new Date(selectBirthDate.toDateString()); // 比較のために時刻をクリア
+      if (
+        sanitizedBirthDate < minBirthDate ||
+        currentDate < sanitizedBirthDate
+      ) {
+        return alert("生年月日が範囲外です（1900年1月1日〜本日）");
+      }
+
+      // 性別：値確認
+      if (selectSex !== "male" && selectSex !== "female") {
+        return alert("性別を選択してください（maleまたはfemale）");
+      }
+
       setPerson({
         birthDate: selectBirthDate,
         sex: selectSex,
       });
 
+      // 初期化
       setSelectBirthDate(null);
       setSelectSex("");
       setShowModal(false);
@@ -80,7 +106,7 @@ export default function Home() {
       // 再作成したRemainingLifeコンポーネントのkeyを更新
       setRemainingLifeKey((prevKey) => prevKey + 1);
     } catch (err) {
-      console.error("err: ", err);
+      router.push("/");
     }
   };
 
@@ -195,6 +221,7 @@ export default function Home() {
                       value={selectBirthDate}
                       onChange={handleChangeBirth}
                       maxDate={new Date()}
+                      minDate={new Date("1900-01-01")}
                     />
                   </Box>
                   <Box sx={{ marginBottom: "10px" }}>
