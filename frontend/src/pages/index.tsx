@@ -176,9 +176,9 @@ export default function Home() {
                 />
                 あなたに残された時間
               </Typography>
-              <Typography sx={{ fontSize: "1.5rem" }}>
+              <Box sx={{ fontSize: "1.5rem" }}>
                 <RemainingLife key={remainingLifeKey} person={person} />
-              </Typography>
+              </Box>
             </Box>
           )}
         </Box>
