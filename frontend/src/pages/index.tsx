@@ -47,6 +47,7 @@ export default function Home() {
   const [selectBirthDate, setSelectBirthDate] = useState<Date | null>(null);
   const [selectSex, setSelectSex] = useState<sexType | "">("");
   const [showModal, setShowModal] = useState(false);
+  const [remainingLifeKey, setRemainingLifeKey] = useState<number>(0);
 
   const handleChangeSex = (e: SelectChangeEvent<sexType>) => {
     setSelectSex(e.target.value as sexType);
@@ -75,6 +76,9 @@ export default function Home() {
       setSelectBirthDate(null);
       setSelectSex("");
       setShowModal(false);
+
+      // 再作成したRemainingLifeコンポーネントのkeyを更新
+      setRemainingLifeKey((prevKey) => prevKey + 1);
     } catch (err) {
       console.error("err: ", err);
     }
@@ -172,9 +176,9 @@ export default function Home() {
                 />
                 あなたに残された時間
               </Typography>
-              <Typography sx={{ fontSize: "1.5rem" }}>
-                <RemainingLife person={person} />
-              </Typography>
+              <Box sx={{ fontSize: "1.5rem" }}>
+                <RemainingLife key={remainingLifeKey} person={person} />
+              </Box>
             </Box>
           )}
         </Box>
