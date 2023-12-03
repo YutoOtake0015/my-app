@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Container,
-  CssBaseline,
   Grid,
   TextField,
   Typography,
@@ -117,7 +116,6 @@ const MyPage = () => {
           <title>マイページ</title>
         </PageHead>
         <Container component="main" maxWidth="xs">
-          <CssBaseline />
           <Box
             sx={{
               marginTop: 8,

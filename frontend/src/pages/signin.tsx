@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -71,7 +70,6 @@ export default function SignIn() {
         <title>ログイン</title>
       </PageHead>
       <Container component="main" maxWidth="xs">
-        <CssBaseline />
         <Box
           sx={{
             marginTop: 8,

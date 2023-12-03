@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Container,
-  CssBaseline,
   Grid,
   MenuItem,
   Select,
@@ -77,7 +76,6 @@ const CreatePersonData = () => {
           <title>余命登録</title>
         </PageHead>
         <Container component="main" maxWidth="xs">
-          <CssBaseline />
           <Box
             sx={{
               marginTop: 8,
