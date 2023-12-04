@@ -38,6 +38,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const setUser = useSetRecoilState(userAtom);
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     const fetchData = async () => {
       // 認証tokenを取得

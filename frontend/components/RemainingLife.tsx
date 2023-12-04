@@ -18,6 +18,7 @@ const RemainingLife = ({ person }) => {
   const [second, setSecond] = useState<number>();
   const [isExceeded, setIsExceeded] = useState<boolean>(false);
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     const fetchData = async () => {
       try {
