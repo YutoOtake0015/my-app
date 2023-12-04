@@ -126,6 +126,7 @@ const PersonPage = ({ person }) => {
     }
   };
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     if (person) {
       setPersonName(person.personName);
